@@ -1,4 +1,5 @@
 $('.player-turn').addClass('hidden'); // initially set the turn text hidden
+$('.play-again').addClass('hidden'); //intially sets play again button hidden
 let player = " ";
 let gameBoard = {
   row1: [],
@@ -9,6 +10,7 @@ let gameStarted = false;
 
 //function to begin the game, show who's turn it is intially
 const startGame = function(){
+  $('.start-game').addClass('hidden');
   $('.player-turn').removeClass('hidden');
   gameStarted = true;
   player = "O";
@@ -36,9 +38,12 @@ const fillBox = function(box){
   checkWin();
 gameStarted === true
 
+// it is a tie when the gameStarted is still true, and there are no empty <td> (all is filled)
   if(gameStarted === true && $('td:empty').length === 0){
-    $('.player-turn').text(`It's a tie`);
+    $('.player-turn').text(`Game over, it's a tie`);
+    gameOver();
 
+//this condition checks in general if gameStart is still true, the game is still running
   }else if(gameStarted === true){
     if(player === "O"){
       player = "X";
@@ -46,10 +51,11 @@ gameStarted === true
       player = "O";
     }
 
-    $('.player-turn').text(`player ${player}'s turn`);
+    $('.player-turn').text(`It's player's ${player} turn`)
 
-  }else if(gameStarted === false){
-    $('.player-turn').text(`Player ${player} won!`)
+  }else if(gameStarted === false){ //checks whether any win conditions were satisfied
+    $('.player-turn').text(`Game over, player ${player} won!`)
+    gameOver();
   }
 
 
@@ -70,17 +76,17 @@ const checkWin = function() {
 
 // a player wins when the whole row is theirs
 
-  for(let i = 1; i <= 3; i++ ){
-    let currentRow = gameBoard['row' + i];
-    // console.log(currentRow);
+  for(let i = 1; i <= 3; i++){
+    let rowArr = $('#row' + i + ' td');
 
-    let col1 = currentRow[0];
-    let col2 = currentRow[1];
-    let col3 = currentRow[2];
+    let col1 = rowArr[0].textContent;
+    let col2 = rowArr[1].textContent;
+    let col3 = rowArr[2].textContent;
 
-    if( (col1 === col2  && col1 === col3) && (col1 !== undefined && col2 !== undefined && col3 != undefined)) {
+    if( (col1 === col2  && col1 === col3) && (col1 !== "" && col2 !== "" && col3 != "")) {
       gameStarted = false;
-      // console.log(`Player ${player} won!`);
+
+      rowArr.addClass('green');
 
     }
 
@@ -97,37 +103,50 @@ const checkWin = function() {
 
       if( (row1 === row2  && row1 === row3) && (row1 !== "" && row2 !== "" && row3 !== "")){
         gameStarted = false;
-        // console.log(`Player ${player} won!`);
+
+        columnArr.addClass('green');
       }
 
   }
 
   // a player wins if they have the diagonals (left to right)
-  let leftDiagonal = [];
+  let leftDiagonal = $('.left-diag');
+  let lBox1 = leftDiagonal[0].textContent;
+  let lBox2 = leftDiagonal[1].textContent;
+  let lBox3 = leftDiagonal[2].textContent;
 
-  for(let i = 0; i < 3; i++){
-    let currentRow = gameBoard['row' + (i+1)][i];
-    leftDiagonal.push(currentRow);
-  }
-
-  if( (leftDiagonal[0] === leftDiagonal[1] && leftDiagonal[0] === leftDiagonal[2]) && (leftDiagonal[0] !== undefined && leftDiagonal[1] !== undefined && leftDiagonal[2] !== undefined)){
+  if( (lBox1 === lBox2 && lBox1 === lBox3) && (lBox1 !== "" && lBox2 !== "" && lBox3 !== "")){
     gameStarted = false;
-
+    leftDiagonal.addClass('green');
   }
-
   // a player wins if they have the daigonals (right to left)
 
-let rightDiagonal = [gameBoard.row3[0], gameBoard.row2[1], gameBoard.row1[2]];
+  let rightDiagonal = $('.right-diag');
+  let rBox1 = rightDiagonal[0].textContent;
+  let rBox2 = rightDiagonal[1].textContent;
+  let rBox3 = rightDiagonal[2].textContent;
 
-if( (rightDiagonal[0] === rightDiagonal[1] && rightDiagonal[0] === rightDiagonal[2]) && (rightDiagonal[0] !== undefined && rightDiagonal[1] !== undefined && rightDiagonal[2] !== undefined)){
-  gameStarted = false;
-
-}
-
-// // it is a tie when the gameStarted is still true, and there are no empty <td> (all is filled)
-// if(gameStarted === true && $('td:empty').length === 0){ //since there are no <td>s that are empty, length should be 0
-//
-// }
+  if( (rBox1 === rBox2 && rBox1 === rBox3) && (rBox1 !== "" && rBox2 !== "" && rBox3 !== "")){
+    gameStarted = false;
+    rightDiagonal.addClass('green');
+  }
 
 
 }
+
+//this function is used when the game is over due to a player win or a tie, so that the board is no longer clickable
+//and the "play again" button re-appears
+const gameOver = function(){
+  $('table td').off('click');
+  $('.play-again').removeClass('hidden');
+}
+
+const playAgain = function(){
+  $('table td').empty(); //clears out all data on the board
+  $('table td').removeClass('green'); // removes any green class boxes
+  player = 'O' // // TODO: ATM only 'O' starts first, set it up so anyone can staert first
+  $('.player-turn').text(`It's player's ${player} turn`);
+  startGame();
+}
+
+$('.play-again').on('click', playAgain);
