@@ -10,6 +10,8 @@ let players = {
 let playerTurn =  0; // this keeps track of which player's turn it is
 let player1Wins = 0;
 let player2Wins = 0;
+let boardSize = 0;
+let inARowNeeded = 0;
 
 let gameBoard = {
   row1: [],
@@ -17,6 +19,7 @@ let gameBoard = {
   row3: [],
 }
 let gameStarted = false;
+
 
 //function to begin the game, show who's turn it is intially
 const startGame = function(){
@@ -36,6 +39,22 @@ const startGame = function(){
   $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   gameStarted = true;
 
+  //obtains board choice to get board size
+  if($('#3x3').is(':checked') === true){
+    boardSize = 3;
+    inARowNeeded = 2;
+  }else if($('#4x4').is(':checked') === true){
+    boardSize = 4;
+    inARowNeeded = 2;
+  }else if($('#5x5').is(':checked') === true){
+    boardSize = 5;
+    inARowNeeded = 3;
+  }else if($('#7x7').is(':checked') === true){
+    boardSize = 7;
+    inARowNeeded = 3;
+  }
+
+  createBoard(boardSize);
 
   let boxes = $('td');
 
@@ -56,18 +75,18 @@ $('button.start-game').on('click', startGame);
 
 const fillBox = function(box){
 
-  console.log("before " + playerTurn);
+  // console.log("before " + playerTurn);
   box.text(players['player' + (+ playerTurn + 1)][0]);
-  console.log("middle " + playerTurn);
+  // console.log("middle " + playerTurn);
 
   // box.fadeOut().fadeIn(function() {
   //   $(this).text(players['player' + (+ playerTurn + 1)][0])
   //   console.log("middle " + playerTurn);
   //   });
-    console.log("after " + playerTurn);
+    // console.log("after " + playerTurn);
   updateGameBoard(box); //updates the gameboard before player variable is swapped
 //alternate the players when a box is clicked
-  checkWin();
+  checkWin(playerTurn);
 gameStarted === true
 
 // it is a tie when the gameStarted is still true, and there are no empty <td> (all is filled)
@@ -104,25 +123,53 @@ const updateGameBoard = function($box){
 
 }
 
-const checkWin = function() {
-
+const checkWin = function(playerTurn) {
   let win = false;
 
-
+  console.log("here " + boardSize);
+  console.log(playerTurn);
 // a player wins when the whole row is theirs
+// to check for this
+// 1) use the playerTurn variable to find the first index of the current player's token we are checking for in the whole row
+// 2) then start from this index and count forwards (to the right) when this box and the box+1, box+2 etc.. is equal to it the counter goes up
+//3) but when a box next to this box is a different token or empty counter will be -1 and so it wont reach the needed 'in-a-row counter wins'
 
-  for(let i = 1; i <= 3; i++){
-    let rowArr = $('#row' + i + ' td');
+  for(let i = 1; i <= boardSize; i++){
+    let rowArr = $('#row' + i + ' td'); //gets each row and processes them all one row at a time
 
-    let col1 = rowArr[0].textContent;
-    let col2 = rowArr[1].textContent;
-    let col3 = rowArr[2].textContent;
+    let colVal = []; // this will contain the current row's contents into an array
+    for(let j  = 0 ; j < boardSize ; j++){
+      colVal.push(rowArr[j].textContent); // pushing each row content into the array
+    }
+    console.log(colVal);
+    let indexCurrentPlayer = colVal.indexOf(players['player' + (+ playerTurn + 1)][0]); // finds the first index of the current player's token (who we are checking for a win) in the colVal array
+    console.log(indexCurrentPlayer);
 
-    if( (col1 === col2  && col1 === col3) && (col1 !== "" && col2 !== "" && col3 != "")) {
+    let counter = 0;
+    for(let k = 1; k < boardSize; k++){
+      // console.log(colVal[k-1] != "");
+      //uses the first instance of the current Player's token and checks to see if every values after that matches it or
+      //if matches counter + 1, if NOT match counter - 1
+      //waits for a specific win counter to be reached before a win is declared
+       if((colVal[indexCurrentPlayer] === colVal[indexCurrentPlayer + k]) && (colVal[indexCurrentPlayer] != "" && colVal[indexCurrentPlayer + k] != "")  ){
+         counter += 1;
+         console.log("counter: " + counter);
+         console.log(inARowNeeded);
+         if(counter >= inARowNeeded){ //TODO: change it to count how many 'in-a-rows' needed to win for diff grids
+          console.log("inside here")
+          win = true;
+           break;
+         }
+       } else{
+         counter -= 1;
+       }
+
+    }
+
+    if(win === true){
       gameStarted = false;
 
       rowArr.addClass('green');
-
     }
 
   }
@@ -208,16 +255,42 @@ const countWin = function(playerTurn){
 }
 
 // allow players to customise their token
-//// TODO: put player tokens into the players array
+//put player tokens into the players array
 const customiseToken = function(){
-  let player1 = $('#player1').val();
+  let player1 = $('#player1').val(); // get token value from input
   let player2 = $('#player2').val();
-  players.player1[0] = player1;
+  players.player1[0] = player1; // add token to player object
   players.player2[0] = player2;
 
-  let counter1 = $('.0-win');
-  let counter2 =$('.1-win');
+  let counter1 = $('.0-win'); //change score count text
+  let counter2 = $('.1-win');
   counter1.text(`Player ${players.player1[0]} wins: ${players.player1[1]}`);
   counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
 
 }
+
+//function to create board depending on the board size chosen by the player
+const createBoard = function(boardSize){
+  if(boardSize > 3){
+
+    for(let i = 3; i < boardSize ; i++ ){
+      //adds the extra <tr> to table
+      $("table").append("<tr></tr>");
+      $($('table tr')[i]).attr('id', 'row' + (i + 1)).attr('class', 'row'); // assigns the id name  and class name
+    }
+
+    for(let i = 1; i <= boardSize; i++){
+      let currentRowColNum = $('#row' + i + ' td').length;
+
+        for(let j = currentRowColNum; j < boardSize; j++) {
+          $('#row' + i).append('<td></td>');
+          $('#row' + i + ' td:last-child').addClass('col' + j);
+        }
+
+
+      }
+
+
+    }
+
+  }

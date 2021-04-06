@@ -70,10 +70,13 @@ main{
 aside{
   display: inline-block;
   vertical-align: top;
+  margin-top: 15%;
+}
+
+.win-counter{
   border: 2px solid #1687a7;
   padding: 20px;
   border-radius: 2em;
-  margin-top: 15%;
 }
 
 button {
