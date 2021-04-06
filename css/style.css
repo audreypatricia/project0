@@ -1,12 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600&family=Kiwi+Maru&display=swap');
+
 body {
   margin: 0;
   padding: 0;
+  background-color: #d3e0ea;
+  color: #276678;
+  font-family: 'Kiwi Maru', serif;
+}
+
+.container{
+  text-align: center;
+}
+
+h1, h2{
+  font-family: 'Comfortaa', cursive;
+}
+
+h1{
+  font-size: 4em;
+  font-weight: 800;
+
+}
+
+table{
+  margin: 0 auto;
+  /* background-color: #f6f5f5; */
 }
 
 td {
-border: 1px solid black;
-height: 50px;
-width: 50px;
+border: 2px solid #1687a7;
+height: 100px;
+width: 100px;
+font-size: 3em;
+}
+
+.col0{
+  border-left: none;
+}
+
+#row1 *{
+  border-top: none;
+}
+
+#row3 *{
+  border-bottom: none;
+}
+
+.col2{
+  border-right: none;
 }
 
 button{
