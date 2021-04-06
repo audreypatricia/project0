@@ -27,7 +27,6 @@ const startGame = function(){
   // this checks which player will go first
   if($('#option-player1').is(':checked') === true){
     playerTurn =$('#option-player1').val(); // get the value "0" back to signal players[0] goes first
-    console.log('here1 ' + playerTurn);
   } else if($('#option-player2').is(':checked') === true){
     playerTurn =$('#option-player2').val();
   } else { //if nothing is selected, a random player is selected to start first
@@ -71,14 +70,14 @@ gameStarted === true
   }else if(gameStarted === true){
     if(playerTurn == 0){
       playerTurn = 1;
-      console.log("here2a");
     } else{
       playerTurn = 0;
-      console.log("here2b")
     }
 
+    //turn off this box's click method once it has been clicked once
+    box.off('click');
+
     $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
-    console.log("here3 " + players['player' + (+ playerTurn + 1)][0])
   }else if(gameStarted === false){ //checks whether any win conditions were satisfied
     $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
     gameOver();
