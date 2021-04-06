@@ -1,7 +1,15 @@
 $('.player-turn').addClass('hidden'); // initially set the turn text hidden
 $('.play-again').addClass('hidden'); //intially sets play again button hidden
-let players = [];
+// let players = []; // TODO: change to an object to hold token and wins
+
+let players = {
+  player1: [" ", 0], //the first array value is for the player token, the second counts wins
+  player2: [" ", 0],
+}
+
 let playerTurn =  0; // this keeps track of which player's turn it is
+let player1Wins = 0;
+let player2Wins = 0;
 
 let gameBoard = {
   row1: [],
@@ -16,7 +24,17 @@ const startGame = function(){
   $('.player-turn').removeClass('hidden');
   customiseToken(); //gets the customised token the player chooses
 
-  $('.player-turn').text(`It's player's ${players[playerTurn]} turn`);
+  // this checks which player will go first
+  if($('#option-player1').is(':checked') === true){
+    playerTurn =$('#option-player1').val(); // get the value "0" back to signal players[0] goes first
+    console.log('here1 ' + playerTurn);
+  } else if($('#option-player2').is(':checked') === true){
+    playerTurn =$('#option-player2').val();
+  } else { //if nothing is selected, a random player is selected to start first
+    playerTurn = Math.floor(Math.random()*2);
+  }
+
+  $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   gameStarted = true;
 
 
@@ -38,7 +56,7 @@ $('button.start-game').on('click', startGame);
 
 
 const fillBox = function(box){
-  box.text(players[playerTurn]);
+  box.text(players['player' + (+ playerTurn + 1)][0]);
   updateGameBoard(box); //updates the gameboard before player variable is swapped
 //alternate the players when a box is clicked
   checkWin();
@@ -51,16 +69,18 @@ gameStarted === true
 
 //this condition checks in general if gameStart is still true, the game is still running
   }else if(gameStarted === true){
-    if(playerTurn === 0){
+    if(playerTurn == 0){
       playerTurn = 1;
+      console.log("here2a");
     } else{
       playerTurn = 0;
+      console.log("here2b")
     }
 
-    $('.player-turn').text(`It's player's ${players[playerTurn]} turn`);
-
+    $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
+    console.log("here3 " + players['player' + (+ playerTurn + 1)][0])
   }else if(gameStarted === false){ //checks whether any win conditions were satisfied
-    $('.player-turn').text(`Game over, player ${players[playerTurn]} won!`);
+    $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
     gameOver();
     countWin(playerTurn);
   }
@@ -72,7 +92,7 @@ gameStarted === true
 const updateGameBoard = function($box){
   let key = $box.parent().attr('id');
   let index = $box.attr('class').slice(-1); //slice(-1) slices the string from length+index to length, the last char
-  gameBoard[key][index] = players[playerTurn];
+  gameBoard[key][index] = players['player' + (+ playerTurn + 1)][0];
 
 }
 
@@ -151,8 +171,8 @@ const gameOver = function(){
 const playAgain = function(){
   $('table td').empty(); //clears out all data on the board
   $('table td').removeClass('green'); // removes any green class boxes
-  player = 'O' // // TODO: ATM only 'O' starts first, set it up so anyone can staert first
-  $('.player-turn').text(`It's player's ${player} turn`);
+  // player = 'O' // TODO: ATM only 'O' starts first, set it up so anyone can start first
+  // $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   startGame();
 }
 
@@ -161,13 +181,19 @@ $('.play-again').on('click', playAgain);
 // win counter
 const countWin = function(playerTurn){
   let counter = $('.' + playerTurn + '-win');
-  console.log(counter);
-  let initial = counter.text().slice(0, counter.text().length - 1) // gets the initial phrase e.g. "X's wins: "
-  console.log(initial);
-  let wins = counter.text().slice(-1); //get the score number which is the last character on the win string
-  wins = + wins + 1;
+  // console.log(counter);
+  // let initial = counter.text().slice(0, counter.text().length - 1) // gets the initial phrase e.g. "X's wins: "
+  // console.log(initial);
+  // let wins = counter.text().slice(-1); //get the score number which is the last character on the win string
+  // wins = + wins + 1;
 
-  counter.text(`Player ${players[playerTurn]} wins: ` + wins);
+  let currentWinCount = players['player' + (+ playerTurn + 1)][1]; // gets the current win score of the winner player
+
+  currentWinCount += 1;
+
+  players['player' + (+ playerTurn + 1)][1] += 1;
+
+  counter.text(`Player ${players['player' + (+ playerTurn + 1)][0]} wins: ${players['player' + (+ playerTurn + 1)][1]}`);
 
 }
 
@@ -176,12 +202,12 @@ const countWin = function(playerTurn){
 const customiseToken = function(){
   let player1 = $('#player1').val();
   let player2 = $('#player2').val();
-  players.push(player1);
-  players.push(player2);
+  players.player1[0] = player1;
+  players.player2[0] = player2;
 
   let counter1 = $('.0-win');
   let counter2 =$('.1-win');
-  counter1.text(`Player ${players[0]} wins: 0`);
-  counter2.text(`Player ${players[1]} wins: 0`);
+  counter1.text(`Player ${players.player1[0]} wins: ${players.player1[1]}`);
+  counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
 
 }
