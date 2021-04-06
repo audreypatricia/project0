@@ -55,7 +55,16 @@ $('button.start-game').on('click', startGame);
 
 
 const fillBox = function(box){
+
+  console.log("before " + playerTurn);
   box.text(players['player' + (+ playerTurn + 1)][0]);
+  console.log("middle " + playerTurn);
+
+  // box.fadeOut().fadeIn(function() {
+  //   $(this).text(players['player' + (+ playerTurn + 1)][0])
+  //   console.log("middle " + playerTurn);
+  //   });
+    console.log("after " + playerTurn);
   updateGameBoard(box); //updates the gameboard before player variable is swapped
 //alternate the players when a box is clicked
   checkWin();
@@ -76,7 +85,7 @@ gameStarted === true
 
     //turn off this box's click method once it has been clicked once
     box.off('click');
-
+    // console.log("here");
     $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   }else if(gameStarted === false){ //checks whether any win conditions were satisfied
     $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
@@ -144,6 +153,7 @@ const checkWin = function() {
   if( (lBox1 === lBox2 && lBox1 === lBox3) && (lBox1 !== "" && lBox2 !== "" && lBox3 !== "")){
     gameStarted = false;
     leftDiagonal.addClass('green');
+
   }
   // a player wins if they have the daigonals (right to left)
 
@@ -155,6 +165,7 @@ const checkWin = function() {
   if( (rBox1 === rBox2 && rBox1 === rBox3) && (rBox1 !== "" && rBox2 !== "" && rBox3 !== "")){
     gameStarted = false;
     rightDiagonal.addClass('green');
+
   }
 
 

@@ -17,7 +17,7 @@ h1, h2{
 }
 
 h1{
-  font-size: 4em;
+  font-size: 3em;
   font-weight: 800;
 
 }
@@ -50,10 +50,6 @@ font-size: 3em;
   border-right: none;
 }
 
-button{
-  margin-top: 30px;
-}
-
 .hidden{
   display: none;
 }
@@ -64,4 +60,31 @@ button{
 
 .green{
   background-color: limegreen;
+}
+
+main{
+  display: inline-block;
+  width: 50%;
+}
+
+aside{
+  display: inline-block;
+  vertical-align: top;
+  border: 2px solid #1687a7;
+  padding: 20px;
+  border-radius: 2em;
+  margin-top: 15%;
+}
+
+button {
+  padding: 10px;
+  border-radius: 1em;
+  background-color: #f6f5f5;
+  font-family: 'Comfortaa', cursive;
+  margin-top: 30px;
+}
+
+button:hover {
+  background-color: #1687a7;
+  color: white;
 }

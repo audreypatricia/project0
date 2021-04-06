@@ -8,50 +8,54 @@
   <body>
 
     <div class="container">
-      <h1>Tic Tac Toe</h1>
+      <main>
+        <h1>Tic Tac Toe</h1>
+        <h2 class="player-turn">player O's turn</h2>
+        
+        <table>
+          <tr id="row1" class="row">
+              <td class="col0 right-diag"></td>
+              <td class="col1"></td>
+              <td class="col2 left-diag"></td>
+          </tr>
+          <tr id="row2" class="row">
+              <td class="col0"></td>
+              <td class="col1 right-diag left-diag"></td>
+              <td class="col2"></td>
+          </tr>
+          <tr id="row3" class="row">
+              <td class="col0 left-diag"></td>
+              <td class="col1"></td>
+              <td class="col2 right-diag"></td>
+          </tr>
+        </table>
+        <br>
 
-      <h2 class="player-turn">player O's turn</h2>
+        <label for="player1">Player 1 token:</label>
+        <input id="player1" type="text" placeholder="choose your token!"> <br>
+        <br>
+        <label for="player2">Player 2 token:</label>
+        <input id="player2" type="text" placeholder="choose your token!"> <br>
 
-      <table>
-        <tr id="row1" class="row">
-            <td class="col0 right-diag"></td>
-            <td class="col1"></td>
-            <td class="col2 left-diag"></td>
-        </tr>
-        <tr id="row2" class="row">
-            <td class="col0"></td>
-            <td class="col1 right-diag left-diag"></td>
-            <td class="col2"></td>
-        </tr>
-        <tr id="row3" class="row">
-            <td class="col0 left-diag"></td>
-            <td class="col1"></td>
-            <td class="col2 right-diag"></td>
-        </tr>
-      </table>
-      <br>
+        <p>Please select who goes first:</p>
+        <input type="radio" id="option-player1" value="0" name="players">Player 1</input> <!--value attr is returned -->
+        <!-- <label for="option-player1">Player 1</label><br> -->
+        <input type="radio" id="option-player2" value="1" name="players">Player 2</input>
+        <!-- <label for="option-player2">Player 2</label><br> -->
+        <br>
+        <button class="start-game" type="button">Start game!</button>
+        <button class="play-again" type="button">Play again</button>
+      </main>
 
-      <label for="player1">Player 1 token:</label>
-      <input id="player1" type="text" placeholder="choose your token!"> <br>
-      <br>
-      <label for="player2">Player 2 token:</label>
-      <input id="player2" type="text" placeholder="choose your token!"> <br>
+      <aside>
+        <div class="win-counter">
+          <h2>Score count:</h2>
+          <p class="0-win">Player 1 wins: 0</p>
+          <p class="1-win">Player 2 wins: 0</p>
 
-      <p>Please select who goes first:</p>
-      <input type="radio" id="option-player1" value="0" name="players">Player 1</input> <!--value attr is returned -->
-      <!-- <label for="option-player1">Player 1</label><br> -->
-      <input type="radio" id="option-player2" value="1" name="players">Player 2</input>
-      <!-- <label for="option-player2">Player 2</label><br> -->
-      <br>
-      <button class="start-game" type="button">Start game!</button>
-      <button class="play-again" type="button">Play again</button>
+        </div>
+      </aside>
 
-      <div class="win-counter">
-        <h2>Score count:</h2>
-        <p class="0-win">Player 1 wins: 0</p>
-        <p class="1-win">Player 2 wins: 0</p>
-
-      </div>
 
     </div>
 
