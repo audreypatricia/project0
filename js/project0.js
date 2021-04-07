@@ -241,8 +241,43 @@ for(let i = 0; i < boardSize; i++){
       $('#row' + (i+1) + " .col" + i).addClass('right-diag');
     }
 
-    let rightDiag = $('right-diag');
-    console.log("rightDiag: " + rightDiag);
+    let rightDiagArr = $('.right-diag');
+
+    let rightDiagVal = [];
+    for(let j = 0 ; j < boardSize; j++){
+      rightDiagVal.push(rightDiagArr[j].textContent)
+    }
+
+    let RDindexCurrentPlayer = rightDiagVal.indexOf(players['player' + ( + playerTurn + 1)][0]);
+
+    let RDcounter = 0;
+    for(let k = 1; k < boardSize; k++){
+
+      if((rightDiagVal[RDindexCurrentPlayer] === rightDiagVal[RDindexCurrentPlayer + k]) && (rightDiagVal[RDindexCurrentPlayer] != "" && rightDiagVal[RDindexCurrentPlayer + k] != "")  ){
+        RDcounter += 1;
+
+        if(RDcounter >= inARowNeeded - 1){
+          win = true;
+
+          for(let l = 0; l < rightDiagArr.length; l++){
+
+            if(rightDiagArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
+              $(rightDiagArr[l]).addClass('green');
+            }
+          }
+          break;
+        }
+      }else {
+        RDcounter -= 1;
+      }
+    }
+
+
+
+
+
+
+
 
 //OLD RIGHT DIAG CODE
   // let rightDiagonal = $('.right-diag');
