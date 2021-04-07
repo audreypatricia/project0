@@ -219,21 +219,62 @@ for(let i = 0; i < boardSize; i++){
 
 
   // a player wins if they have the diagonals (left to right)
+let index = boardSize - 1; // because the pattern is reversed
+//row1[col2]  row2[col1]  rpw3[col0] so this index will be opposite of the 'i' to assign get the right boxes to give is a right-diag class
+for(let i = 1; i <= boardSize; i++){
+console.log("here from left diag");
+  $('#row' + i + " .col" + index).addClass('left-diag');
+  index--;
+}
+
+let leftDiagArr = $('.left-diag');
+
+let leftDiagVal = [];
+for(let j = 0 ; j < boardSize; j++){
+  leftDiagVal.push(leftDiagArr[j].textContent)
+}
+
+let LDindexCurrentPlayer = leftDiagVal.indexOf(players['player' + ( + playerTurn + 1)][0]);
+
+let LDcounter = 0;
+for(let k = 1; k < boardSize; k++){
+
+  if((leftDiagVal[LDindexCurrentPlayer] === leftDiagVal[LDindexCurrentPlayer + k]) && (leftDiagVal[LDindexCurrentPlayer] != "" && leftDiagVal[LDindexCurrentPlayer + k] != "")  ){
+    LDcounter += 1;
+
+    if(LDcounter >= inARowNeeded - 1){
+      win = true;
+
+      for(let l = 0; l < leftDiagArr.length; l++){
+
+        if(leftDiagArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
+          $(leftDiagArr[l]).addClass('green');
+        }
+      }
+      break;
+    }
+  }else {
+    LDcounter -= 1;
+  }
+}
+
+
+
 
   //OLD LEFT-DIAG CODE
-  let leftDiagonal = $('.left-diag');
-  let lBox1 = leftDiagonal[0].textContent;
-  let lBox2 = leftDiagonal[1].textContent;
-  let lBox3 = leftDiagonal[2].textContent;
-
-  if( (lBox1 === lBox2 && lBox1 === lBox3) && (lBox1 !== "" && lBox2 !== "" && lBox3 !== "")){
-    gameStarted = false;
-    leftDiagonal.addClass('green');
-
-  }
+  // let leftDiagonal = $('.left-diag');
+  // let lBox1 = leftDiagonal[0].textContent;
+  // let lBox2 = leftDiagonal[1].textContent;
+  // let lBox3 = leftDiagonal[2].textContent;
+  //
+  // if( (lBox1 === lBox2 && lBox1 === lBox3) && (lBox1 !== "" && lBox2 !== "" && lBox3 !== "")){
+  //   gameStarted = false;
+  //   leftDiagonal.addClass('green');
+  //
+  // }
   //OLD LEFT DIAG CODE
 
-  // a player wins if they have the daigonals (right to left)
+  // a player wins if they have the diagonals (right to left)
 
 
   //putting the class on all boxes that are on the left diagonal axis
@@ -271,25 +312,6 @@ for(let i = 0; i < boardSize; i++){
         RDcounter -= 1;
       }
     }
-
-
-
-
-
-
-
-
-//OLD RIGHT DIAG CODE
-  // let rightDiagonal = $('.right-diag');
-  // let rBox1 = rightDiagonal[0].textContent;
-  // let rBox2 = rightDiagonal[1].textContent;
-  // let rBox3 = rightDiagonal[2].textContent;
-  //
-  // if( (rBox1 === rBox2 && rBox1 === rBox3) && (rBox1 !== "" && rBox2 !== "" && rBox3 !== "")){
-  //   gameStarted = false;
-  //   rightDiagonal.addClass('green');
-  //
-  //   }
 
     if(win === true){
       gameStarted = false;
