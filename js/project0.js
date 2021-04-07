@@ -178,12 +178,6 @@ const checkWin = function(playerTurn) {
 
     }
 
-    if(win === true){
-      gameStarted = false;
-
-
-    }
-
   }
 
   // a player wins if the whole column is theirs
@@ -223,27 +217,10 @@ for(let i = 0; i < boardSize; i++){
 
 }
 
-if(win === true){
-  gameStarted = false;
-
-//OLD COLUMN CODE
-  for(let i = 0; i < 3; i++){
-      let columnArr = $('td.col' + i);
-      // console.log(columnArr);
-      let row1 = columnArr[0].textContent;
-      let row2 = columnArr[1].textContent;
-      let row3 = columnArr[2].textContent;
-
-      if( (row1 === row2  && row1 === row3) && (row1 !== "" && row2 !== "" && row3 !== "")){
-        gameStarted = false;
-
-        columnArr.addClass('green');
-      }
-
-  }
-  // OLD COLUMN CODE
 
   // a player wins if they have the diagonals (left to right)
+
+  //OLD LEFT-DIAG CODE
   let leftDiagonal = $('.left-diag');
   let lBox1 = leftDiagonal[0].textContent;
   let lBox2 = leftDiagonal[1].textContent;
@@ -254,21 +231,35 @@ if(win === true){
     leftDiagonal.addClass('green');
 
   }
+  //OLD LEFT DIAG CODE
+
   // a player wins if they have the daigonals (right to left)
 
-  let rightDiagonal = $('.right-diag');
-  let rBox1 = rightDiagonal[0].textContent;
-  let rBox2 = rightDiagonal[1].textContent;
-  let rBox3 = rightDiagonal[2].textContent;
 
-  if( (rBox1 === rBox2 && rBox1 === rBox3) && (rBox1 !== "" && rBox2 !== "" && rBox3 !== "")){
-    gameStarted = false;
-    rightDiagonal.addClass('green');
-
+  //putting the class on all boxes that are on the left diagonal axis
+    for(let i = 0; i < boardSize; i++){
+      $('#row' + (i+1) + " .col" + i).addClass('right-diag');
     }
 
+    let rightDiag = $('right-diag');
+    console.log("rightDiag: " + rightDiag);
 
-  }
+//OLD RIGHT DIAG CODE
+  // let rightDiagonal = $('.right-diag');
+  // let rBox1 = rightDiagonal[0].textContent;
+  // let rBox2 = rightDiagonal[1].textContent;
+  // let rBox3 = rightDiagonal[2].textContent;
+  //
+  // if( (rBox1 === rBox2 && rBox1 === rBox3) && (rBox1 !== "" && rBox2 !== "" && rBox3 !== "")){
+  //   gameStarted = false;
+  //   rightDiagonal.addClass('green');
+  //
+  //   }
+
+    if(win === true){
+      gameStarted = false;
+    }
+
 }
 //this function is used when the game is over due to a player win or a tie, so that the board is no longer clickable
 //and the "play again" button re-appears
