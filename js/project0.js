@@ -128,6 +128,7 @@ const checkWin = function(playerTurn) {
 
   console.log("here " + boardSize);
   console.log(playerTurn);
+
 // a player wins when the whole row is theirs
 // to check for this
 // 1) use the playerTurn variable to find the first index of the current player's token we are checking for in the whole row
@@ -158,6 +159,14 @@ const checkWin = function(playerTurn) {
          if(counter >= inARowNeeded){ //TODO: change it to count how many 'in-a-rows' needed to win for diff grids
           console.log("inside here")
           win = true;
+
+          for(let l = 0 ; l < rowArr.length; l++){
+
+            if(rowArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
+              $(rowArr[l]).addClass('green');
+            }
+          }
+          // rowArr.addClass('green');
            break;
          }
        } else{
@@ -169,7 +178,7 @@ const checkWin = function(playerTurn) {
     if(win === true){
       gameStarted = false;
 
-      rowArr.addClass('green');
+
     }
 
   }
@@ -274,11 +283,14 @@ const createBoard = function(boardSize){
   if(boardSize > 3){
 
     for(let i = 3; i < boardSize ; i++ ){
-      //adds the extra <tr> to table
+      //adds the extra <tr> to table //adding extra rows
       $("table").append("<tr></tr>");
       $($('table tr')[i]).attr('id', 'row' + (i + 1)).attr('class', 'row'); // assigns the id name  and class name
+
+      gameBoard['row' + (i+1)] = [];
     }
 
+    //adding extra columns to each row, depending on how many columns they already have at the moment
     for(let i = 1; i <= boardSize; i++){
       let currentRowColNum = $('#row' + i + ' td').length;
 
