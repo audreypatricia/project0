@@ -1,11 +1,19 @@
 # Tic Tac Toe  
 
-## subheadings
+Feeling bored in class/ work/ home, play the classic Tic Tac Toe game instead
 
-subheadings
------------
+## Motivation
 
-### sub-subheadings
+I built this game to practice building a web application from scratch and map out game logic for a simple game
+
+
+### Tech/framework used  
+
+This project uses HTML, CSS and Javascript. JQuery is also used to communicate with the DOM and interact with elements on the page as the user plays the game.
+
+### Features
+
+In this game of Tic Tac Toe, you can choose your characters, (there's no need for the old boring 'O' and 'X'), maybe you want to be a polar bear  
 
 First paragraph
 

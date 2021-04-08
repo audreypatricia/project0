@@ -62,15 +62,14 @@ const startGame = function(){
   } else if($('#option-player2').is(':checked') === true){
     playerTurn =$('#option-player2').val();
   } else { //if nothing is selected, a random player is selected to start first
-    // let num = Math.floor(Math.random()*2);
-    // console.log(num);
-    // if(computerPlaying === true && num === 1){ // if the computer is playing it needs to skip the playerTurn 1 = which is player2
-    //   playerTurn = num + 1;
-    // }else{
-    //   playerTurn = num;
-    // }
+    let num = Math.floor(Math.random()*2);
+    console.log(num);
+    if(computerPlaying === true && num === 1){ // if the computer is playing it needs to skip the playerTurn 1 = which is player2
+      playerTurn = num + 1;
+    }else{
+      playerTurn = num;
+    }
 
-    playerTurn = 2;
   }
   console.log("here from start game " + playerTurn);
   $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
