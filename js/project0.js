@@ -2,9 +2,11 @@ $('.player-turn').addClass('hidden'); // initially set the turn text hidden
 $('.play-again').addClass('hidden'); //intially sets play again button hidden
 // let players = []; // TODO: change to an object to hold token and wins
 
+
 let players = {
   player1: [" ", 0], //the first array value is for the player token, the second counts wins
   player2: [" ", 0],
+  player3:["👾", 0], //this is the computerplayer
 }
 
 let playerTurn =  0; // this keeps track of which player's turn it is
@@ -19,10 +21,23 @@ let gameBoard = {
   row3: [],
 }
 let gameStarted = false;
+let computerPlaying = false; //checks whether the player chooses to play with the computer
 
+$('#comp-player').on('change', function(){
+  $('.p2').toggle('hidden'); // if computer player checkbox is ticked player 2 toke choice is hidden
+  $('.1-win').toggle('hidden');
+  if($('#comp-player').is(':checked')){ //when the computer player checkbox is checked then set computerplaying to true else it is false
+    computerPlaying = true;
+  } else{
+    computerPlaying = false;
+  }
+});
 
 //function to begin the game, show who's turn it is intially
 const startGame = function(){
+  if(computerPlaying === false){
+    $('.1-win').addClass('hidden');
+  }
   $('.start-game').addClass('hidden');
   $('.player-turn').removeClass('hidden');
   customiseToken(); //gets the customised token the player chooses
@@ -33,7 +48,15 @@ const startGame = function(){
   } else if($('#option-player2').is(':checked') === true){
     playerTurn =$('#option-player2').val();
   } else { //if nothing is selected, a random player is selected to start first
-    playerTurn = Math.floor(Math.random()*2);
+    // let num = Math.floor(Math.random()*2);
+    // console.log(num);
+    // if(computerPlaying === true && num === 1){ // if the computer is playing it needs to skip the playerTurn 1 = which is player2
+    //   playerTurn = num + 1;
+    // }else{
+    //   playerTurn = num;
+    // }
+
+    playerTurn = 2;
   }
 
   $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
@@ -65,8 +88,12 @@ const startGame = function(){
       fillBox($box);
     });
   }
+  console.log('here');
+  if(playerTurn === 2){
+    computerTurn();
+  }
 
-
+  console.log('here after');
 }
 
 //attach startGame function to the "start game" button
@@ -74,8 +101,9 @@ $('button.start-game').on('click', startGame);
 
 
 const fillBox = function(box){
-
+  console.log("1: " + playerTurn)
   // console.log("before " + playerTurn);
+  console.log(players['player' + (+ playerTurn + 1)][0])
   box.text(players['player' + (+ playerTurn + 1)][0]);
   // console.log("middle " + playerTurn);
 
@@ -95,17 +123,34 @@ const fillBox = function(box){
     gameOver();
 
 //this condition checks in general if gameStart is still true, the game is still running
-  }else if(gameStarted === true){
-    if(playerTurn == 0){
-      playerTurn = 1;
-    } else{
-      playerTurn = 0;
+  }else if(gameStarted === true ){
+
+    if(computerPlaying === false){
+      if(playerTurn == 0){
+        playerTurn = 1;
+      } else{
+        playerTurn = 0;
+      }
+    }else { //when computer is playing
+      if(playerTurn == 0){
+        playerTurn = 2;
+        console.log('hereA');
+      } else{
+        playerTurn = 0;
+        console.log('hereB');
+      }
+    }
+
+
+    if(playerTurn = 2){
+      computerTurn();
     }
 
     //turn off this box's click method once it has been clicked once
     box.off('click');
     // console.log("here");
-    $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
+    console.log("2: "+ playerTurn);
+    // $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   }else if(gameStarted === false){ //checks whether any win conditions were satisfied
     $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
     gameOver();
@@ -113,6 +158,123 @@ const fillBox = function(box){
   }
 
 
+}
+
+const computerTurn = function(){
+
+  //CODE FOR RANDOM COMPUTER MOVES
+
+  // let emptyBoxesAmt = $('td:empty').length;
+  // let randomNum = Math.floor(Math.random()* emptyBoxesAmt);
+  // let boxToBeFilled = $('td:empty')[randomNum];
+  // console.log(boxToBeFilled);
+  // $(boxToBeFilled).text(players['player' + (+ playerTurn + 1)][0]);
+  // playerTurn = 0;
+  // console.log("3: " + playerTurn);
+
+  //CODE FOR RANDOM COMPUTER MOVES
+  console.log("here middle");
+
+  switch($('td:empty').length){
+    case 9:
+      $('#row3 .col2').text(players['player3'][0]);
+      console.log("here at 9")
+
+      break;
+
+    case 8:
+      console.log("here at 8")
+
+      break;
+
+    case 7:
+
+      if($('#row2 .col1').text() === players.player1[0]){ // if player goes middle
+        $('#row1 .col0').text(players['player3'][0]); //computer goes diagonally accross
+      }else{ //else if player goes to any other position
+        if($('#row3 .col0').is(':empty') === true){
+          $('#row3 .col0').text(players['player3'][0]); // if this box is empty fill it with comp
+        } else{ //if the left bottom corner is not empty take the top right corner
+          $('#row1 .col2').text(players['player3'][0]);
+        }
+
+      }
+
+      break;
+
+    case 6:
+
+      break;
+
+    case 5:
+
+      if($('#row2 .col1').text() === players.player1[0]){ //if player has the middle tile
+        if($('#row1 .col2').is(':empty') === true){
+          $('#row1 .col2').text(players['player3'][0]);
+        }else{
+          $('#row3 .col0').text(players['player3'][0]);
+        }
+
+      }else { //if player does NOT have the middle tile
+        if($('#row1 .col0').is(':empty') === true){
+          $('#row1 .col0').text(players['player3'][0]);
+        }else{
+          $('#row1 .col2').text(players['player3'][0]);
+        }
+      }
+
+
+      break;
+
+    case 4:
+
+      break;
+
+    case 3:
+        if($('#row2 .col1').text() === players.player1[0]){ //if player has middle
+
+          if(($('#row1 .col0').text() === $('#row3 .col0').text())  && ($('#row1 .col0').text() === $('#row3 .col2').text())){ //if computer has the left side L
+
+            if($('#row2 .col0').is(':empty') === true){
+              $('#row2 .col0').text(players['player3'][0]);
+            }else{
+              $('#row3 .col1').text(players['player3'][0]);
+            }
+
+          } else { //if computer has the right side L
+
+            if($('#row1 .col1').is(':empty') === true){
+              $('#row1 .col1').text(players['player3'][0]);
+            }else{
+              $('#row2 .col2').text(players['player3'][0]);
+            }
+          }
+        } else { //if player didnt have middle
+
+        }
+
+      // checkWin(playerTurn);
+      break;
+
+    case 2:
+
+      break;
+
+    case 1:
+
+      break;
+  }
+
+  checkWin(playerTurn);
+  if(gameStarted === false){
+    console.log("here where text should be printed");
+    $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
+    console.log("text printed");
+    gameOver();
+    countWin(playerTurn);
+  } else{
+  playerTurn = 0;
+  }
 }
 
 //this function updates the gameboard object everytime the board is clicked and filled with a O/X
@@ -125,9 +287,6 @@ const updateGameBoard = function($box){
 
 const checkWin = function(playerTurn) {
   let win = false;
-
-  console.log("here " + boardSize);
-  console.log(playerTurn);
 
 // a player wins when the whole row is theirs
 // to check for this
@@ -183,7 +342,7 @@ const checkWin = function(playerTurn) {
   // a player wins if the whole column is theirs
 
 for(let i = 0; i < boardSize; i++){
-
+  console.log("checking column win");
   let colArr = $('.col' + i); // gets each columns
   let colVal = [];
   for(let j = 0 ; j < boardSize; j++){
@@ -222,7 +381,6 @@ for(let i = 0; i < boardSize; i++){
 let index = boardSize - 1; // because the pattern is reversed
 //row1[col2]  row2[col1]  rpw3[col0] so this index will be opposite of the 'i' to assign get the right boxes to give is a right-diag class
 for(let i = 1; i <= boardSize; i++){
-console.log("here from left diag");
   $('#row' + i + " .col" + index).addClass('left-diag');
   index--;
 }
@@ -337,6 +495,7 @@ $('.play-again').on('click', playAgain);
 
 // win counter
 const countWin = function(playerTurn){
+  console.log("here in countWin, playerTurn " + playerTurn);
   let counter = $('.' + playerTurn + '-win');
   // console.log(counter);
   // let initial = counter.text().slice(0, counter.text().length - 1) // gets the initial phrase e.g. "X's wins: "
@@ -347,11 +506,14 @@ const countWin = function(playerTurn){
   let currentWinCount = players['player' + (+ playerTurn + 1)][1]; // gets the current win score of the winner player
 
   currentWinCount += 1;
-
+  console.log(currentWinCount);
   players['player' + (+ playerTurn + 1)][1] += 1;
+
+  if(computerPlaying === false){
 
   counter.text(`Player ${players['player' + (+ playerTurn + 1)][0]} wins: ${players['player' + (+ playerTurn + 1)][1]}`);
 
+  }
 }
 
 // allow players to customise their token
@@ -364,8 +526,19 @@ const customiseToken = function(){
 
   let counter1 = $('.0-win'); //change score count text
   let counter2 = $('.1-win');
+  let counter3 = $('.2-win');
   counter1.text(`Player ${players.player1[0]} wins: ${players.player1[1]}`);
   counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
+  counter3.text(`Player ${players.player3[0]} wins: ${players.player3[1]}`);
+
+//if the computer is not playing that the player 2 values/ tokens will be initialised
+  // if(computerPlaying === false){
+  //   let player2 = $('#player2').val();
+  //   players.player2[0] = player2;
+  //   counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
+  // } else{ //if computer is playing
+  //   counter2.text(`Player ${players.player3[0]} wins: ${players.player3[1]}`);
+  // }
 
 }
 

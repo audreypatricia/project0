@@ -34,12 +34,16 @@
         <label for="player1">Player 1 token:</label>
         <input id="player1" type="text" placeholder="choose your token!"> <br>
         <br>
-        <label for="player2">Player 2 token:</label>
-        <input id="player2" type="text" placeholder="choose your token!"> <br>
+        <label for="player2" class="p2">Player 2 token:</label>
+        <input id="player2" class="p2" type="text" placeholder="choose your token!"> <br><br>
+        <input type="checkbox" id="comp-player" name="computer" value="1">
+        <label for="comp-player">Play with computer</label><br>
 
         <p>Please select who goes first:</p>
         <input type="radio" id="option-player1" value="0" name="players">Player 1</input> <!--value attr is returned -->
-        <input type="radio" id="option-player2" value="1" name="players">Player 2</input>
+
+        <input type="radio" id="option-player2" class="p2" value="1" name="players"></input>
+        <label for="option-player2" class="p2">Player 2 </label>
         <br>
 
         <p>Select board size:</p>
@@ -57,6 +61,7 @@
           <h2>Score count:</h2>
           <p class="0-win">Player 1 wins: 0</p>
           <p class="1-win">Player 2 wins: 0</p>
+          <p class="2-win">Computer 👾 wins: 0</p>
 
         </div>
 
