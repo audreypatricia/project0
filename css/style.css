@@ -49,17 +49,21 @@ tr:last-child td{
 .row td:last-child{
   border-right: none;
 }
-/* #row1 *{
-  border-top: none;
-} */
 
-/* #row3 *{
-  border-bottom: none;
-} */
+.win-gif{
+  position: absolute;
+  width: 30%;
+  left: 0%;
+  top: 30%;
+}
 
-/* .col2{
-  border-right: none;
-} */
+.win-cat{
+  position: absolute;
+  right: 13%;
+  width: 20%;
+  bottom: -4%;
+  }
+
 
 .hidden{
   display: none;

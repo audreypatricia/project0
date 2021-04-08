@@ -3,6 +3,7 @@ $('.play-again').addClass('hidden'); //intially sets play again button hidden
 // let players = []; // TODO: change to an object to hold token and wins
 
 
+
 let players = {
   player1: [" ", 0], //the first array value is for the player token, the second counts wins
   player2: [" ", 0],
@@ -71,7 +72,7 @@ const startGame = function(){
 
     playerTurn = 2;
   }
-
+  console.log("here from start game " + playerTurn);
   $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   gameStarted = true;
 
@@ -88,6 +89,9 @@ const startGame = function(){
   }else if($('#7x7').is(':checked') === true){
     boardSize = 7;
     inARowNeeded = 5;
+  }else{
+    boardSize = 3;
+    inARowNeeded = 3;
   }
 
   createBoard(boardSize);
@@ -103,6 +107,7 @@ const startGame = function(){
   }
 
   if(playerTurn === 2){
+    console.log("here")
     computerTurn();
   }
 
@@ -114,18 +119,9 @@ $('button.start-game').on('click', startGame);
 
 const fillBox = function(box){
 
-  // console.log("before " + playerTurn);
-
   box.text(players['player' + (+ playerTurn + 1)][0]);
-  // console.log("middle " + playerTurn);
-
-  // box.fadeOut().fadeIn(function() {
-  //   $(this).text(players['player' + (+ playerTurn + 1)][0])
-  //   console.log("middle " + playerTurn);
-  //   });
-    // console.log("after " + playerTurn);
   updateGameBoard(box); //updates the gameboard before player variable is swapped
-//alternate the players when a box is clicked
+
   checkWin(playerTurn);
 
   if(playerTurn === 0){
@@ -149,15 +145,16 @@ const fillBox = function(box){
         playerTurn = 0;
       }
     }else { //when computer is playing
+      console.log("in here: " + playerTurn)
       if(playerTurn == 0){
         playerTurn = 2;
-
+        console.log("not supposed to be here")
       } else{
         playerTurn = 0;
-
+        console.log("here");
       }
     }
-
+    console.log(playerTurn);
     $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
 
 
@@ -174,6 +171,7 @@ const fillBox = function(box){
 
   }else if(gameStarted === false){ //checks whether any win conditions were satisfied
     $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
+    $('win-gif').removeClass('hidden');
     gameOver();
     countWin(playerTurn);
   }
@@ -182,6 +180,7 @@ const fillBox = function(box){
 }
 
 const computerTurn = function(){
+  console.log("2 here " + playerTurn);
   let latestPlayerMove = playerMoves[playerMoves.length - 1];
   //CODE FOR RANDOM COMPUTER MOVES
 
@@ -342,8 +341,10 @@ const computerTurn = function(){
 
     gameOver();
     countWin(playerTurn);
-  } else{
+  }
+  else{
   playerTurn = 0;
+  $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   }
 }
 
@@ -552,6 +553,8 @@ for(let k = 1; k < boardSize; k++){
 const gameOver = function(){
   $('table td').off('click');
   $('.play-again').removeClass('hidden');
+  $('.win-gif').removeClass('hidden');
+  $('.win-cat').removeClass('hidden');
 
   playerMoves = [];
 }
@@ -559,8 +562,8 @@ const gameOver = function(){
 const playAgain = function(){
   $('table td').empty(); //clears out all data on the board
   $('table td').removeClass('green'); // removes any green class boxes
-  // player = 'O' // TODO: ATM only 'O' starts first, set it up so anyone can start first
-  // $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
+  $('.win-gif').addClass('hidden');
+  $('.win-cat').addClass('hidden');
   startGame();
 }
 
@@ -642,4 +645,7 @@ const createBoard = function(boardSize){
 
     }
 
+    if($('tr').length > boardSize){
+    $('tr:last-child').remove();
+    }
   }
