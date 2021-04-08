@@ -38,17 +38,28 @@ font-size: 3em;
   border-left: none;
 }
 
-#row1 *{
+#row1 td{
   border-top: none;
 }
 
-#row3 *{
+tr:last-child td{
   border-bottom: none;
 }
 
-.col2{
+.row td:last-child{
   border-right: none;
 }
+/* #row1 *{
+  border-top: none;
+} */
+
+/* #row3 *{
+  border-bottom: none;
+} */
+
+/* .col2{
+  border-right: none;
+} */
 
 .hidden{
   display: none;
