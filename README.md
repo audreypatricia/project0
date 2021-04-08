@@ -2,55 +2,79 @@
 
 Feeling bored in class/ work/ home, play the classic Tic Tac Toe game instead
 
+![Tic Tac Toe](images/Tic-Tac-Toe.png)
+
+Win a game by get a row of 3 tiles either vertically, horizontally or diagonally (for both the 3x3 and 4x4 boards).
+
+For the 5x5 boards it gets trickier where you need 4 in a row and lastly for the ultimate challenge, get 5 in a row on the 7x7 board.
+
+
 ## Motivation
 
-I built this game to practice building a web application from scratch and map out game logic for a simple game
+I built this game to practice building a web application from scratch and map out game logic for a simple game.
 
 
-### Tech/framework used  
+### Tech/ framework used  
 
-This project uses HTML, CSS and Javascript. JQuery is also used to communicate with the DOM and interact with elements on the page as the user plays the game.
+This project uses **HTML, CSS and Javascript**. **JQuery** is also used to communicate with the DOM and interact with elements on the page as the user plays the game.
 
 ### Features
 
-In this game of Tic Tac Toe, you can choose your characters, (there's no need for the old boring 'O' and 'X'), maybe you want to be a polar bear  
+* Classic Tic Tac Toe
+  * Ability to detect wins and draws
+* Custom character tokens (use initials or emojis)
+* Custom board sizes (3x3, 4x4, 5x5, 7x7)
+* Keeps track of win count  
+* Cat dance for wins
 
-First paragraph
+In this game of Tic Tac Toe, you can ***choose your characters***, (there's no need for the old boring 'O' and 'X'), maybe you want to be a bear 🐻 or be a poop emoji 💩,(use `cmd` + `ctrl` + `space`) it's all possible! You can also play on ***different board sizes*** for a bigger challenge amongst your friends.
 
-Second paragraph.
+You can also ***choose who gets to start first*** and change these during the many rounds you will play.
 
-Third paragraph.
+### How to use
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+To play this game, you can download the source code and run it on your browser. Or simply play the game on this link:
 
-## Emphasis
+https://audreypatricia.github.io/project0/
 
-We can have *italic* text. You can have **bold** text. Also ***bold intalic***.
+![Shiba playing](images/shiba-gif.gif)
 
-Does this _italic_. this is __bold__. And this is ___bold italic___.
+### Code Example
 
-* Groucho
-* Harpo
-* Chico
-
-- Groucho
-- Harpo
-- Chico
-
-1. Groucho
-2. Harpo
-3. Chico
-
-![Bill Murray](https://www.fillmurray.com/500/400)
-
-## code   
-
-In jQuery we often use the `$` and the `document` object is less useful. we can also `console.log`.
+I thought this was cool! The table appends "creates itself" by appending additional rows and columns when the players chooses a certain board size
 
 ```javascript
-const hello = function() {
-  console.log('hello world');
-}
+const createBoard = function(boardSize){
+  if(boardSize > 3){
+
+    for(let i = 3; i < boardSize ; i++ ){
+      //adds the extra <tr> to table //adding extra rows
+      $("table").append("<tr></tr>");
+      $($('table tr')[i]).attr('id', 'row' + (i + 1)).attr('class', 'row'); // assigns the id name  and class name
+
+      gameBoard['row' + (i+1)] = [];
+    }
+
+    //adding extra columns to each row, depending on how many columns they already have at the moment
+    for(let i = 1; i <= boardSize; i++){
+      let currentRowColNum = $('#row' + i + ' td').length;
+
+        for(let j = currentRowColNum; j < boardSize; j++) {
+          $('#row' + i).append('<td></td>');
+          $('#row' + i + ' td:last-child').addClass('col' + j);
+        }
+
+
+      }
+
+
+    }
+  }
 ```
 
-Here is an example linking to the [W3C](https://w3c.org/).
+## Future improvements
+
+* Creating an Computer player that never loses in the classic 3x3 game  
+* Allowing for local storage so that points are still kept even when the browser is closed
+* Ability to select images/ gifs as player tokens
+* Support network players so that this game can be played by someone else not in the same room
