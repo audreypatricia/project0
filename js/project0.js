@@ -1,30 +1,33 @@
+//A few things to hide when the game has not begun
 $('.player-turn').addClass('hidden'); // initially set the turn text hidden
 $('.play-again').addClass('hidden'); //intially sets play again button hidden
 // let players = []; // TODO: change to an object to hold token and wins
 
-
-
+//object player stores all player details i.e. token and win-count
+//the first array value is for the player token, the second counts wins
 let players = {
-  player1: [" ", 0], //the first array value is for the player token, the second counts wins
+  player1: [" ", 0],
   player2: [" ", 0],
-  player3:["👾", 0], //this is the computerplayer
+  player3: ["👾", 0], //this is the computerplayer
 }
 
-let playerTurn =  0; // this keeps track of which player's turn it is
+let playerTurn =  0; // this keeps track of which player's turn it is, this is used to call specific player objects
 let player1Wins = 0;
 let player2Wins = 0;
 let boardSize = 0;
-let inARowNeeded = 0;
-let playerMoves = [];
+let inARowNeeded = 0; //how many in-a-row needed to win the game
+let playerMoves = []; // this is used by the computer player to track the moves of the player
 
+// the gameboard object stores the game information during each game, e.g. position of each player's tokens
 let gameBoard = {
   row1: [],
   row2: [],
   row3: [],
 }
-let gameStarted = false;
+let gameStarted = false; //turned on only when game is started/ played again
 let computerPlaying = false; //checks whether the player chooses to play with the computer
 
+//this bit of code hides the inputs for player 2 if the user decides to play against the computer
 $('#comp-player').on('change', function(){
   $('.p2').toggle('hidden'); // if computer player checkbox is ticked player 2 toke choice is hidden
   $('.1-win').toggle('hidden');
@@ -38,18 +41,18 @@ $('#comp-player').on('change', function(){
 //function to begin the game, show who's turn it is intially
 const startGame = function(){
 
-  //depending on who plays hides the scor count for the person that does not play e.g.player2 / computer
+  //depending on who plays hides the score count for the person that does not play e.g.player2 / computer
   if(computerPlaying === true){
     $('.1-win').addClass('hidden');
-    //numbering all boxes
+
+    //numbering all boxes -- this is used when playing with the computer
     let numOfBoxes = $('td').length;
       for(let i = 1; i <= numOfBoxes; i++){
         $($('td')[i - 1]).attr('id',`${i}`);
       }
-
-  }else{
-    $('.2-win').addClass('hidden');
-  }
+    }else{
+      $('.2-win').addClass('hidden');
+    }
 
 
   $('.start-game').addClass('hidden');
@@ -61,17 +64,19 @@ const startGame = function(){
     playerTurn =$('#option-player1').val(); // get the value "0" back to signal players[0] goes first
   } else if($('#option-player2').is(':checked') === true){
     playerTurn =$('#option-player2').val();
+  } else if($('#computer-player').is(':checked') === true){
+    playerTurn =$('#computer-player').val();
   } else { //if nothing is selected, a random player is selected to start first
     let num = Math.floor(Math.random()*2);
     console.log(num);
-    if(computerPlaying === true && num === 1){ // if the computer is playing it needs to skip the playerTurn 1 = which is player2
+    if(computerPlaying === true && num === 1){ // if the computer is playing it needs to skip the playerTurn: 1 = which is player2
       playerTurn = num + 1;
     }else{
       playerTurn = num;
     }
 
   }
-  console.log("here from start game " + playerTurn);
+
   $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
   gameStarted = true;
 
@@ -88,11 +93,12 @@ const startGame = function(){
   }else if($('#7x7').is(':checked') === true){
     boardSize = 7;
     inARowNeeded = 5;
-  }else{
+  }else{ //the default board size if an option is not selected is the classic 3x3
     boardSize = 3;
     inARowNeeded = 3;
   }
 
+  //This magically creates the board *POOF*
   createBoard(boardSize);
 
   let boxes = $('td');
@@ -105,7 +111,8 @@ const startGame = function(){
     });
   }
 
-  if(playerTurn === 2){
+  //If computer starts first this will get the computer to make a move
+  if(playerTurn == 2){
     console.log("here")
     computerTurn();
   }
@@ -115,15 +122,15 @@ const startGame = function(){
 //attach startGame function to the "start game" button
 $('button.start-game').on('click', startGame);
 
-
+//This is the function that activates when a box is pressed
 const fillBox = function(box){
 
   box.text(players['player' + (+ playerTurn + 1)][0]);
   updateGameBoard(box); //updates the gameboard before player variable is swapped
 
-  checkWin(playerTurn);
+  checkWin(playerTurn); //check for win after every move
 
-  if(playerTurn === 0){
+  if(playerTurn === 0){ //this code is used when playing with the computer and pushes player moves into an array
     playerMoves.push(box.attr('id'));
 
   }
@@ -147,204 +154,179 @@ const fillBox = function(box){
       console.log("in here: " + playerTurn)
       if(playerTurn == 0){
         playerTurn = 2;
-        console.log("not supposed to be here")
       } else{
         playerTurn = 0;
-        console.log("here");
       }
     }
-    console.log(playerTurn);
+
     $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
 
-
+    //if it is time for the computer to play call the computerTurn() function
     if(playerTurn === 2){
-
-
       computerTurn();
     }
 
-    //turn off this box's click method once it has been clicked once
+    //turn off this box's click method once it has been clicked once- avoids accidental clicks and changing the tokens in each box
     box.off('click');
-    // console.log("here");
 
 
-  }else if(gameStarted === false){ //checks whether any win conditions were satisfied
+  // if there is a win, the checkWin function would have turned gameStarted into false
+  } else if(gameStarted === false) { //checks whether any win conditions were satisfied
     $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
     $('win-gif').removeClass('hidden');
     gameOver();
     countWin(playerTurn);
   }
 
-
 }
 
 const computerTurn = function(){
-  console.log("2 here " + playerTurn);
+  //reads the latest move the player has made
   let latestPlayerMove = playerMoves[playerMoves.length - 1];
-  //CODE FOR RANDOM COMPUTER MOVES
-
-  // let emptyBoxesAmt = $('td:empty').length;
-  // let randomNum = Math.floor(Math.random()* emptyBoxesAmt);
-  // let boxToBeFilled = $('td:empty')[randomNum];
-  // console.log(boxToBeFilled);
-  // $(boxToBeFilled).text(players['player' + (+ playerTurn + 1)][0]);
-  // playerTurn = 0;
-  // console.log("3: " + playerTurn);
 
   //CODE FOR RANDOM COMPUTER MOVES
 
-
-  switch($('td:empty').length){
-    case 9:
-      $('#row3 .col2').text(players['player3'][0]);
-
-
-      break;
-
-    case 8:
-
-
-      break;
-
-    case 7:
-
-      if($('#row2 .col1').text() === players.player1[0]){ // if player goes middle
-        $('#row1 .col0').text(players['player3'][0]); //computer goes diagonally accross
-
-      }else{ //else if player goes to any other position
-        if($('#7').is(':empty') === true){
-          $('#7').text(players['player3'][0]); // if this box is empty fill it with comp
-        } else if($('#3').is(':empty') === true){ //if the left bottom corner is not empty take the top right corner
-          $('#3').text(players['player3'][0]);
-        } else{
-          $('#1').text(players['player3'][0]);
-        }
-
-      }
-
-      break;
-
-    case 6:
-
-      break;
-
-    case 5:
-
-
-
-      if($('#row2 .col1').text() === players.player1[0]){ //if player already has the middle
-
-        //and player takes the sides (NOT CORNERS)
-        if(latestPlayerMove == 2 || latestPlayerMove == 6 || latestPlayerMove == 4 || latestPlayerMove == 8){
-          if(latestPlayerMove == 2){
-            $('#8').text(players['player3'][0]);
-          }else if(latestPlayerMove == 8){
-            $('#2').text(players['player3'][0]);
-          }else if(latestPlayerMove == 4){
-            $('#6').text(players['player3'][0]);
-          }else if(latestPlayerMove == 6){
-            $('#4').text(players['player3'][0]);
-          }
-        } else if(latestPlayerMove == 3 || latestPlayerMove == 7){ // or player takes the corners
-
-          if($('#7').is(':empty') === true){
-            $('#7').text(players['player3'][0]);
-          }else{
-            $('#3').text(players['player3'][0]);
-          }
-
-        }
-
-      }else{ //if players take another tile (NOT THE MIDDLE)
-
-        if($('#3').is(':empty') == true){
-          $('#3').text(players['player3'][0]);
-        }else if($('#1').is(':empty') == true){
-          $('#1').text(players['player3'][0]);
-        }else{
-          $('#7').text(players['player3'][0]);
-        }
-
-
-      }
-
-      break;
-
-    case 4:
-
-      break;
-
-    case 3:
-
-      // let latestPlayerMove = playerMoves[playerMoves.length - 1];
-
-      if($('#row2 .col1').text() === players.player1[0]){
-        if(latestPlayerMove == 7){
-          $('#3').text(players['player3'][0]);
-        }else if(latestPlayerMove == 3){
-          $('#7').text(players['player3'][0]);
-        }else if($('#1').text() == $('#7').text() && $('#1').text() == $('#9').text()){
-          if($('#4').is(':empty')){
-            $('#4').text(players['player3'][0]);
-          }else{
-            $('#8').text(players['player3'][0]);
-          }
-        }else if($('#1').text() == $('#3').text() && $('#1').text() == $('#9').text()){
-          if($('#6').is(':empty')){
-            $('#6').text(players['player3'][0]);
-          }else{
-            $('#2').text(players['player3'][0]);
-          }
-        }
-
-
-
-      }else{
-
-        if($('#1').text() == $('#7').text() && $('#1').text() == $('#9').text()){
-          if($('#4').is(':empty') === true){
-            $('#4').text(players['player3'][0]);
-          }else{
-            $('#8').text(players['player3'][0]);
-          }
-        }else if($('#3').text() == $('#7').text() && $('#3').text() == $('#9').text()){
-          if($('#6').is(':empty') === true){
-            $('#6').text(players['player3'][0]);
-          }else if($('#8').is(':empty') === true){
-            $('#8').text(players['player3'][0]);
-          }else if($('#5').is(':empty') === true){
-            $('#5').text(players['player3'][0]);
-          }
-        }
-      }
-
-
-      break;
-
-    case 2:
-
-      break;
-
-    case 1:
-
-      $($('td:empty')[0]).text(players['player3'][0]);
-
-      break;
-  }
-
-  checkWin(playerTurn);
-
-  if(gameStarted === false){
-
-    $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
-
-    gameOver();
-    countWin(playerTurn);
-  }
-  else{
+  let emptyBoxesAmt = $('td:empty').length;
+  let randomNum = Math.floor(Math.random()* emptyBoxesAmt);
+  let boxToBeFilled = $('td:empty')[randomNum];
+  console.log(boxToBeFilled);
+  $(boxToBeFilled).text(players['player' + (+ playerTurn + 1)][0]);
   playerTurn = 0;
-  $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
-  }
+  console.log("3: " + playerTurn);
+
+  //CODE FOR RANDOM COMPUTER MOVES
+
+  //UNFINISHED CODE TO PLAY WITH UNBEATEABLE COMPUTER
+
+  // switch($('td:empty').length){
+  //   case 9:
+  //     $('#row3 .col2').text(players['player3'][0]);
+  //     break;
+  //
+  //   case 8:
+  //     break;
+  //
+  //   case 7:
+  //     if($('#row2 .col1').text() === players.player1[0]){ // if player goes middle
+  //       $('#row1 .col0').text(players['player3'][0]); //computer goes diagonally accross
+  //
+  //     }else{ //else if player goes to any other position
+  //       if($('#7').is(':empty') === true){
+  //         $('#7').text(players['player3'][0]); // if this box is empty fill it with comp
+  //       } else if($('#3').is(':empty') === true){ //if the left bottom corner is not empty take the top right corner
+  //         $('#3').text(players['player3'][0]);
+  //       } else{
+  //         $('#1').text(players['player3'][0]);
+  //       }
+  //
+  //     }
+  //
+  //     break;
+  //
+  //   case 6:
+  //     break;
+  //
+  //   case 5:
+  //     if($('#row2 .col1').text() === players.player1[0]){ //if player already has the middle
+  //
+  //       //and player takes the sides (NOT CORNERS)
+  //       if(latestPlayerMove == 2 || latestPlayerMove == 6 || latestPlayerMove == 4 || latestPlayerMove == 8){
+  //         if(latestPlayerMove == 2){
+  //           $('#8').text(players['player3'][0]);
+  //         }else if(latestPlayerMove == 8){
+  //           $('#2').text(players['player3'][0]);
+  //         }else if(latestPlayerMove == 4){
+  //           $('#6').text(players['player3'][0]);
+  //         }else if(latestPlayerMove == 6){
+  //           $('#4').text(players['player3'][0]);
+  //         }
+  //       } else if(latestPlayerMove == 3 || latestPlayerMove == 7){ // or player takes the corners
+  //
+  //         if($('#7').is(':empty') === true){
+  //           $('#7').text(players['player3'][0]);
+  //         }else{
+  //           $('#3').text(players['player3'][0]);
+  //         }
+  //
+  //       }
+  //
+  //     }else{ //if players take another tile (NOT THE MIDDLE)
+  //
+  //       if($('#3').is(':empty') == true){
+  //         $('#3').text(players['player3'][0]);
+  //       }else if($('#1').is(':empty') == true){
+  //         $('#1').text(players['player3'][0]);
+  //       }else{
+  //         $('#7').text(players['player3'][0]);
+  //       }
+  //
+  //
+  //     }
+  //
+  //     break;
+  //
+  //   case 4:
+  //     break;
+  //
+  //   case 3:
+  //     if($('#row2 .col1').text() === players.player1[0]){
+  //       if(latestPlayerMove == 7){
+  //         $('#3').text(players['player3'][0]);
+  //       }else if(latestPlayerMove == 3){
+  //         $('#7').text(players['player3'][0]);
+  //       }else if($('#1').text() == $('#7').text() && $('#1').text() == $('#9').text()){
+  //         if($('#4').is(':empty')){
+  //           $('#4').text(players['player3'][0]);
+  //         }else{
+  //           $('#8').text(players['player3'][0]);
+  //         }
+  //       }else if($('#1').text() == $('#3').text() && $('#1').text() == $('#9').text()){
+  //         if($('#6').is(':empty')){
+  //           $('#6').text(players['player3'][0]);
+  //         }else{
+  //           $('#2').text(players['player3'][0]);
+  //         }
+  //       }
+  //
+  //     }else{
+  //
+  //       if($('#1').text() == $('#7').text() && $('#1').text() == $('#9').text()){
+  //         if($('#4').is(':empty') === true){
+  //           $('#4').text(players['player3'][0]);
+  //         }else{
+  //           $('#8').text(players['player3'][0]);
+  //         }
+  //       }else if($('#3').text() == $('#7').text() && $('#3').text() == $('#9').text()){
+  //         if($('#6').is(':empty') === true){
+  //           $('#6').text(players['player3'][0]);
+  //         }else if($('#8').is(':empty') === true){
+  //           $('#8').text(players['player3'][0]);
+  //         }else if($('#5').is(':empty') === true){
+  //           $('#5').text(players['player3'][0]);
+  //         }
+  //       }
+  //     }
+  //     break;
+  //
+  //   case 2:
+  //     break;
+  //
+  //   case 1:
+  //     $($('td:empty')[0]).text(players['player3'][0]); //fill out the remaining empty box
+  //     break;
+  // }
+  //
+  // checkWin(playerTurn);
+  //
+  // if(gameStarted === false){
+  //   $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
+  //   gameOver();
+  //   countWin(playerTurn);
+  // }
+  // else{
+  // playerTurn = 0;
+  // $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
+  // }
 }
 
 //this function updates the gameboard object everytime the board is clicked and filled with a O/X
@@ -356,9 +338,7 @@ const updateGameBoard = function($box){
 }
 
 const checkWin = function(playerTurn) {
-
   let win = false;
-
 // a player wins when the whole row is theirs
 // to check for this
 // 1) use the playerTurn variable to find the first index of the current player's token we are checking for in the whole row
@@ -373,28 +353,19 @@ const checkWin = function(playerTurn) {
     for(let j  = 0 ; j < boardSize ; j++){
       rowVal.push(rowArr[j].textContent); // pushing each row content into the array
     }
-    // console.log(rowVal);
     let RindexCurrentPlayer = rowVal.indexOf(players['player' + (+ playerTurn + 1)][0]); // finds the first index of the current player's token (who we are checking for a win) in the rowVal array
-    // console.log("1 indexOf: " + RindexCurrentPlayer);
 
     let counter = 0;
     for(let k = 1; k < boardSize; k++){
-      // console.log(rowVal[k-1] != "");
       //uses the first instance of the current Player's token and checks to see if every values after that matches it or
       //if matches counter + 1, if NOT match counter - 1
       //waits for a specific win counter to be reached before a win is declared
        if((rowVal[RindexCurrentPlayer] === rowVal[RindexCurrentPlayer + k]) && (rowVal[RindexCurrentPlayer] != "" && rowVal[RindexCurrentPlayer + k] != "")  ){
          counter += 1;
-         // console.log("counter: " + counter);
-         // console.log(inARowNeeded);
-
 
          if(counter >= inARowNeeded - 1){
-          // console.log("inside here")
           win = true;
-
           for(let l = 0 ; l < rowArr.length; l++){
-
             if(rowArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
               $(rowArr[l]).addClass('green');
             }
@@ -403,109 +374,86 @@ const checkWin = function(playerTurn) {
          }
        } else{
          counter -= 1;
-         // console.log("counter2: " + counter)
        }
-
     }
-
   }
 
   // a player wins if the whole column is theirs
 
-for(let i = 0; i < boardSize; i++){
+  for(let i = 0; i < boardSize; i++){
 
-  let colArr = $('.col' + i); // gets each columns
-  let colVal = [];
+    let colArr = $('.col' + i); // gets each columns
+    let colVal = [];
+    for(let j = 0 ; j < boardSize; j++){
+      colVal.push(colArr[j].textContent);
+    } //pushing each row content into the array colVal
+
+    let CindexCurrentPlayer = colVal.indexOf(players['player' + ( + playerTurn + 1)][0]);
+
+    let colCounter = 0;
+    for(let k = 1; k < boardSize; k++){
+
+      if((colVal[CindexCurrentPlayer] === colVal[CindexCurrentPlayer + k]) && (colVal[CindexCurrentPlayer] != "" && colVal[CindexCurrentPlayer + k] != "") ){
+        colCounter += 1
+
+        if(colCounter >= inARowNeeded - 1){
+          win = true;
+
+          for(let l = 0; l < colArr.length; l++){
+
+            if(colArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
+              $(colArr[l]).addClass('green');
+            }
+          }
+          break;
+        }
+      } else{
+        colCounter -= 1;
+      }
+    }
+}
+
+
+    // a player wins if they have the diagonals (left to right)
+  let index = boardSize - 1; // because the pattern is reversed
+  //row1[col2]  row2[col1]  rpw3[col0] so this index will be opposite of the 'i' to assign get the right boxes to give is a right-diag class
+  for(let i = 1; i <= boardSize; i++){
+    $('#row' + i + " .col" + index).addClass('left-diag');
+    index--;
+  }
+
+  let leftDiagArr = $('.left-diag');
+
+  let leftDiagVal = [];
   for(let j = 0 ; j < boardSize; j++){
-    colVal.push(colArr[j].textContent);
-  } //pushing each row content into the array colVal
+    leftDiagVal.push(leftDiagArr[j].textContent)
+  }
 
-  let CindexCurrentPlayer = colVal.indexOf(players['player' + ( + playerTurn + 1)][0]);
+  let LDindexCurrentPlayer = leftDiagVal.indexOf(players['player' + ( + playerTurn + 1)][0]);
 
-  let colCounter = 0;
+  let LDcounter = 0;
   for(let k = 1; k < boardSize; k++){
 
-    if((colVal[CindexCurrentPlayer] === colVal[CindexCurrentPlayer + k]) && (colVal[CindexCurrentPlayer] != "" && colVal[CindexCurrentPlayer + k] != "") ){
-      colCounter += 1
+    if((leftDiagVal[LDindexCurrentPlayer] === leftDiagVal[LDindexCurrentPlayer + k]) && (leftDiagVal[LDindexCurrentPlayer] != "" && leftDiagVal[LDindexCurrentPlayer + k] != "")  ){
+      LDcounter += 1;
 
-      if(colCounter >= inARowNeeded - 1){
+      if(LDcounter >= inARowNeeded - 1){
         win = true;
 
-        for(let l = 0; l < colArr.length; l++){
+        for(let l = 0; l < leftDiagArr.length; l++){
 
-          if(colArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
-            $(colArr[l]).addClass('green');
+          if(leftDiagArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
+            $(leftDiagArr[l]).addClass('green');
           }
         }
         break;
       }
-    } else{
-      colCounter -= 1;
+    }else {
+      LDcounter -= 1;
     }
   }
-
-
-}
-
-
-  // a player wins if they have the diagonals (left to right)
-let index = boardSize - 1; // because the pattern is reversed
-//row1[col2]  row2[col1]  rpw3[col0] so this index will be opposite of the 'i' to assign get the right boxes to give is a right-diag class
-for(let i = 1; i <= boardSize; i++){
-  $('#row' + i + " .col" + index).addClass('left-diag');
-  index--;
-}
-
-let leftDiagArr = $('.left-diag');
-
-let leftDiagVal = [];
-for(let j = 0 ; j < boardSize; j++){
-  leftDiagVal.push(leftDiagArr[j].textContent)
-}
-
-let LDindexCurrentPlayer = leftDiagVal.indexOf(players['player' + ( + playerTurn + 1)][0]);
-
-let LDcounter = 0;
-for(let k = 1; k < boardSize; k++){
-
-  if((leftDiagVal[LDindexCurrentPlayer] === leftDiagVal[LDindexCurrentPlayer + k]) && (leftDiagVal[LDindexCurrentPlayer] != "" && leftDiagVal[LDindexCurrentPlayer + k] != "")  ){
-    LDcounter += 1;
-
-    if(LDcounter >= inARowNeeded - 1){
-      win = true;
-
-      for(let l = 0; l < leftDiagArr.length; l++){
-
-        if(leftDiagArr[l].textContent === players['player' + (+ playerTurn + 1)][0]){
-          $(leftDiagArr[l]).addClass('green');
-        }
-      }
-      break;
-    }
-  }else {
-    LDcounter -= 1;
-  }
-}
-
-
-
-
-  //OLD LEFT-DIAG CODE
-  // let leftDiagonal = $('.left-diag');
-  // let lBox1 = leftDiagonal[0].textContent;
-  // let lBox2 = leftDiagonal[1].textContent;
-  // let lBox3 = leftDiagonal[2].textContent;
-  //
-  // if( (lBox1 === lBox2 && lBox1 === lBox3) && (lBox1 !== "" && lBox2 !== "" && lBox3 !== "")){
-  //   gameStarted = false;
-  //   leftDiagonal.addClass('green');
-  //
-  // }
-  //OLD LEFT DIAG CODE
 
   // a player wins if they have the diagonals (right to left)
-
-
   //putting the class on all boxes that are on the left diagonal axis
     for(let i = 0; i < boardSize; i++){
       $('#row' + (i+1) + " .col" + i).addClass('right-diag');
@@ -547,6 +495,7 @@ for(let k = 1; k < boardSize; k++){
     }
 
 }
+
 //this function is used when the game is over due to a player win or a tie, so that the board is no longer clickable
 //and the "play again" button re-appears
 const gameOver = function(){
@@ -572,22 +521,12 @@ $('.play-again').on('click', playAgain);
 const countWin = function(playerTurn){
 
   let counter = $('.' + playerTurn + '-win');
-  // console.log(counter);
-  // let initial = counter.text().slice(0, counter.text().length - 1) // gets the initial phrase e.g. "X's wins: "
-  // console.log(initial);
-  // let wins = counter.text().slice(-1); //get the score number which is the last character on the win string
-  // wins = + wins + 1;
-
   let currentWinCount = players['player' + (+ playerTurn + 1)][1]; // gets the current win score of the winner player
-
   currentWinCount += 1;
-
   players['player' + (+ playerTurn + 1)][1] += 1;
 
   if(computerPlaying === false){
-
   counter.text(`Player ${players['player' + (+ playerTurn + 1)][0]} wins: ${players['player' + (+ playerTurn + 1)][1]}`);
-
   }
 }
 
@@ -637,14 +576,10 @@ const createBoard = function(boardSize){
           $('#row' + i).append('<td></td>');
           $('#row' + i + ' td:last-child').addClass('col' + j);
         }
-
-
       }
-
-
     }
-
+    
     if($('tr').length > boardSize){
-    $('tr:last-child').remove();
+      $('tr:last-child').remove();
     }
   }
