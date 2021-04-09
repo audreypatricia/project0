@@ -128,7 +128,7 @@ const fillBox = function(box){
   box.text(players['player' + (+ playerTurn + 1)][0]);
   updateGameBoard(box); //updates the gameboard before player variable is swapped
 
-  checkWin(playerTurn); //check for win after every move
+  let win = checkWin(playerTurn); //check for win after every move
 
   if(playerTurn === 0){ //this code is used when playing with the computer and pushes player moves into an array
     playerMoves.push(box.attr('id'));
@@ -138,7 +138,7 @@ const fillBox = function(box){
 // it is a tie when the gameStarted is still true, and there are no empty <td> (all is filled)
   if(gameStarted === true && $('td:empty').length === 0){
     $('.player-turn').text(`Game over, it's a tie`);
-    gameOver();
+    gameOver(win);
 
 //this condition checks in general if gameStart is still true, the game is still running
   }else if(gameStarted === true ){
@@ -493,17 +493,20 @@ const checkWin = function(playerTurn) {
     if(win === true){
       gameStarted = false;
     }
-
+    return win;
 }
 
 //this function is used when the game is over due to a player win or a tie, so that the board is no longer clickable
 //and the "play again" button re-appears
-const gameOver = function(){
+const gameOver = function(win){
+
   $('table td').off('click');
   $('.play-again').removeClass('hidden');
-  $('.win-gif').removeClass('hidden');
-  $('.win-cat').removeClass('hidden');
-
+  if(win === true){
+    $('.win-gif').removeClass('hidden');
+    $('.win-cat').removeClass('hidden');
+  }
+  
   playerMoves = [];
 }
 
@@ -578,7 +581,7 @@ const createBoard = function(boardSize){
         }
       }
     }
-    
+
     if($('tr').length > boardSize){
       $('tr:last-child').remove();
     }
