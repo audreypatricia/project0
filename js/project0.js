@@ -506,7 +506,7 @@ const gameOver = function(win){
     $('.win-gif').removeClass('hidden');
     $('.win-cat').removeClass('hidden');
   }
-  
+
   playerMoves = [];
 }
 
@@ -582,7 +582,11 @@ const createBoard = function(boardSize){
       }
     }
 
-    if($('tr').length > boardSize){
-      $('tr:last-child').remove();
+    let trLength = $('tr').length;
+    for(let i = trLength; i > boardSize; i-- ){
+
+        $('tr:last-child').remove();
+
     }
+
   }
