@@ -57,7 +57,8 @@ const startGame = function(){
 
   $('.start-game').addClass('hidden');
   $('.player-turn').removeClass('hidden');
-  customiseToken(); //gets the customised token the player chooses
+
+    customiseToken(); //gets the customised token the player chooses
 
   // this checks which player will go first
   if($('#option-player1').is(':checked') === true){
@@ -531,6 +532,7 @@ const countWin = function(playerTurn){
   if(computerPlaying === false){
   counter.text(`Player ${players['player' + (+ playerTurn + 1)][0]} wins: ${players['player' + (+ playerTurn + 1)][1]}`);
   }
+
 }
 
 // allow players to customise their token
