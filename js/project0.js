@@ -584,9 +584,6 @@ const createBoard = function(boardSize){
 
     let trLength = $('tr').length;
     for(let i = trLength; i > boardSize; i-- ){
-
         $('tr:last-child').remove();
-
     }
-
   }

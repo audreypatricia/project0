@@ -14,11 +14,11 @@ For the 5x5 boards it gets trickier where you need 4 in a row and lastly for the
 I built this game to practice building a web application from scratch and map out game logic for a simple game.
 
 
-### Tech/ framework used  
+## Tech/ framework used  
 
 This project uses **HTML, CSS and Javascript**. **JQuery** is also used to communicate with the DOM and interact with elements on the page as the user plays the game.
 
-### Features
+## Features
 
 * Classic Tic Tac Toe
   * Ability to detect wins and draws
@@ -31,7 +31,7 @@ In this game of Tic Tac Toe, you can ***choose your characters***, (there's no n
 
 You can also ***choose who gets to start first*** and change these during the many rounds you will play.
 
-### How to use
+## How to use
 
 To play this game, you can download the source code and run it on your browser. Or simply play the game on this link:
 
@@ -39,7 +39,7 @@ https://audreypatricia.github.io/project0/
 
 ![Shiba playing](images/shiba-gif.gif)
 
-### Code Example
+## Code Example
 
 I thought this was cool! The table appends "creates itself" by appending additional rows and columns when the players chooses a certain board size
 
