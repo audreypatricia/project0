@@ -24,6 +24,9 @@ This project uses **HTML, CSS and Javascript**. **JQuery** is also used to commu
   * Ability to detect wins and draws
 * Custom character tokens (use initials or emojis)
 * Custom board sizes (3x3, 4x4, 5x5, 7x7)
+  * get 3 in a row to win in 4x4 board
+  * get 5 in a row to win in a 5x5 board
+  * get 7 in a row to win in a 7x7 board
 * Keeps track of win count  
 * Cat dance for wins
 
@@ -41,7 +44,7 @@ https://audreypatricia.github.io/project0/
 
 ## Code Example
 
-I thought this was cool! The table appends "creates itself" by appending additional rows and columns when the players chooses a certain board size
+I thought this was cool! The table appends "creates itself" by appending additional rows and columns when the players chooses a certain board size.
 
 ```javascript
 const createBoard = function(boardSize){
@@ -71,10 +74,28 @@ const createBoard = function(boardSize){
     }
   }
 ```
+CSS selectors such as :first-child and :last-child help to format the board as new rows and columns are being appended
+```css
 
+.col0{
+  border-left: none;
+}
+
+#row1 td{
+  border-top: none;
+}
+
+tr:last-child td{
+  border-bottom: none;
+}
+
+.row td:last-child{
+  border-right: none;
+}
+
+```
 ## Future improvements
 
 * Creating an Computer player that never loses in the classic 3x3 game  
-* Allowing for local storage so that points are still kept even when the browser is closed
 * Ability to select images/ gifs as player tokens
 * Support network players so that this game can be played by someone else not in the same room
