@@ -11,6 +11,38 @@ let players = {
   player3: ["👾", 0], //this is the computerplayer
 }
 
+
+let isSaved = false;
+
+const saveGame = function(){
+  isSaved = true;
+  localStorage.setItem("player1Wins", players.player1[1]);
+  localStorage.setItem("player2Wins", players.player2[1]);
+  localStorage.setItem("computerWins", players.player3[1]);
+
+  localStorage.setItem("player1Token", players.player1[0]);
+  localStorage.setItem("player2Token", players.player2[0]);
+  localStorage.setItem("isSaved", isSaved);
+}
+
+$('.save-game').on('click', saveGame);
+
+if(localStorage.getItem('isSaved') === "true"){
+
+  $('.0-win').text(`Player 1 wins: ${localStorage.getItem("player1Wins")}`);
+  $('.1-win').text(`Player 2 wins: ${localStorage.getItem("player2Wins")}`);
+  $('.2-win').text(`Computer 👾 wins: ${localStorage.getItem("computerWins")}`);
+  players.player1[1] = parseInt(localStorage.getItem("player1Wins"));
+  players.player2[1] = parseInt(localStorage.getItem("player2Wins"));
+  players.player3[1] = parseInt(localStorage.getItem("computerWins"));
+
+  $('#player1').val(localStorage.getItem("player1Token"));
+  $('#player2').val(localStorage.getItem("player2Token"));
+
+  $('.start-game').addClass('hidden');
+  $('.play-again').removeClass('hidden');
+}
+
 let playerTurn =  0; // this keeps track of which player's turn it is, this is used to call specific player objects
 let player1Wins = 0;
 let player2Wins = 0;
@@ -40,7 +72,6 @@ $('#comp-player').on('change', function(){
 
 //function to begin the game, show who's turn it is intially
 const startGame = function(){
-
   //depending on who plays hides the score count for the person that does not play e.g.player2 / computer
   if(computerPlaying === true){
     $('.1-win').addClass('hidden');
@@ -69,7 +100,7 @@ const startGame = function(){
     playerTurn =$('#computer-player').val();
   } else { //if nothing is selected, a random player is selected to start first
     let num = Math.floor(Math.random()*2);
-    console.log(num);
+
     if(computerPlaying === true && num === 1){ // if the computer is playing it needs to skip the playerTurn: 1 = which is player2
       playerTurn = num + 1;
     }else{
@@ -524,9 +555,12 @@ $('.play-again').on('click', playAgain);
 // win counter
 const countWin = function(playerTurn){
 
+  // if(localStorage.getItem('isSaved') === "true"){
+  //   players['player' + ( + playerTurn + 1)][1] = parseInt(localStorage.getItem('player' + (+ playerTurn + 1) + 'Wins'));
+  // }
+
   let counter = $('.' + playerTurn + '-win');
-  let currentWinCount = players['player' + (+ playerTurn + 1)][1]; // gets the current win score of the winner player
-  currentWinCount += 1;
+
   players['player' + (+ playerTurn + 1)][1] += 1;
 
   if(computerPlaying === false){
@@ -550,7 +584,7 @@ const customiseToken = function(){
   counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
   counter3.text(`Player ${players.player3[0]} wins: ${players.player3[1]}`);
 
-//if the computer is not playing that the player 2 values/ tokens will be initialised
+//if the computer is not playing then the player 2 values/ tokens will be initialised
   // if(computerPlaying === false){
   //   let player2 = $('#player2').val();
   //   players.player2[0] = player2;
