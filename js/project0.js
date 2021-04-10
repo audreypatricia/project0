@@ -26,6 +26,9 @@ const saveGame = function(){
 }
 
 $('.save-game').on('click', saveGame);
+$('.clear-game').on('click', function(){
+  localStorage.clear();
+})
 
 if(localStorage.getItem('isSaved') === "true"){
 
@@ -78,7 +81,7 @@ const startGame = function(){
 
     //numbering all boxes -- this is used when playing with the computer
     let numOfBoxes = $('td').length;
-      for(let i = 1; i <= numOfBoxes; i++){
+      for(let i = 1; i < numOfBoxes; i++){
         $($('td')[i - 1]).attr('id',`${i}`);
       }
     }else{
@@ -121,10 +124,10 @@ const startGame = function(){
     inARowNeeded = 3;
   }else if($('#5x5').is(':checked') === true){
     boardSize = 5;
-    inARowNeeded = 4;
+    inARowNeeded = 5;
   }else if($('#7x7').is(':checked') === true){
     boardSize = 7;
-    inARowNeeded = 5;
+    inARowNeeded = 7;
   }else{ //the default board size if an option is not selected is the classic 3x3
     boardSize = 3;
     inARowNeeded = 3;
@@ -206,7 +209,7 @@ const fillBox = function(box){
   } else if(gameStarted === false) { //checks whether any win conditions were satisfied
     $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
     $('win-gif').removeClass('hidden');
-    gameOver();
+    gameOver(win);
     countWin(playerTurn);
   }
 
@@ -221,144 +224,8 @@ const computerTurn = function(){
   let emptyBoxesAmt = $('td:empty').length;
   let randomNum = Math.floor(Math.random()* emptyBoxesAmt);
   let boxToBeFilled = $('td:empty')[randomNum];
-  console.log(boxToBeFilled);
   $(boxToBeFilled).text(players['player' + (+ playerTurn + 1)][0]);
   playerTurn = 0;
-  console.log("3: " + playerTurn);
-
-  //CODE FOR RANDOM COMPUTER MOVES
-
-  //UNFINISHED CODE TO PLAY WITH UNBEATEABLE COMPUTER
-
-  // switch($('td:empty').length){
-  //   case 9:
-  //     $('#row3 .col2').text(players['player3'][0]);
-  //     break;
-  //
-  //   case 8:
-  //     break;
-  //
-  //   case 7:
-  //     if($('#row2 .col1').text() === players.player1[0]){ // if player goes middle
-  //       $('#row1 .col0').text(players['player3'][0]); //computer goes diagonally accross
-  //
-  //     }else{ //else if player goes to any other position
-  //       if($('#7').is(':empty') === true){
-  //         $('#7').text(players['player3'][0]); // if this box is empty fill it with comp
-  //       } else if($('#3').is(':empty') === true){ //if the left bottom corner is not empty take the top right corner
-  //         $('#3').text(players['player3'][0]);
-  //       } else{
-  //         $('#1').text(players['player3'][0]);
-  //       }
-  //
-  //     }
-  //
-  //     break;
-  //
-  //   case 6:
-  //     break;
-  //
-  //   case 5:
-  //     if($('#row2 .col1').text() === players.player1[0]){ //if player already has the middle
-  //
-  //       //and player takes the sides (NOT CORNERS)
-  //       if(latestPlayerMove == 2 || latestPlayerMove == 6 || latestPlayerMove == 4 || latestPlayerMove == 8){
-  //         if(latestPlayerMove == 2){
-  //           $('#8').text(players['player3'][0]);
-  //         }else if(latestPlayerMove == 8){
-  //           $('#2').text(players['player3'][0]);
-  //         }else if(latestPlayerMove == 4){
-  //           $('#6').text(players['player3'][0]);
-  //         }else if(latestPlayerMove == 6){
-  //           $('#4').text(players['player3'][0]);
-  //         }
-  //       } else if(latestPlayerMove == 3 || latestPlayerMove == 7){ // or player takes the corners
-  //
-  //         if($('#7').is(':empty') === true){
-  //           $('#7').text(players['player3'][0]);
-  //         }else{
-  //           $('#3').text(players['player3'][0]);
-  //         }
-  //
-  //       }
-  //
-  //     }else{ //if players take another tile (NOT THE MIDDLE)
-  //
-  //       if($('#3').is(':empty') == true){
-  //         $('#3').text(players['player3'][0]);
-  //       }else if($('#1').is(':empty') == true){
-  //         $('#1').text(players['player3'][0]);
-  //       }else{
-  //         $('#7').text(players['player3'][0]);
-  //       }
-  //
-  //
-  //     }
-  //
-  //     break;
-  //
-  //   case 4:
-  //     break;
-  //
-  //   case 3:
-  //     if($('#row2 .col1').text() === players.player1[0]){
-  //       if(latestPlayerMove == 7){
-  //         $('#3').text(players['player3'][0]);
-  //       }else if(latestPlayerMove == 3){
-  //         $('#7').text(players['player3'][0]);
-  //       }else if($('#1').text() == $('#7').text() && $('#1').text() == $('#9').text()){
-  //         if($('#4').is(':empty')){
-  //           $('#4').text(players['player3'][0]);
-  //         }else{
-  //           $('#8').text(players['player3'][0]);
-  //         }
-  //       }else if($('#1').text() == $('#3').text() && $('#1').text() == $('#9').text()){
-  //         if($('#6').is(':empty')){
-  //           $('#6').text(players['player3'][0]);
-  //         }else{
-  //           $('#2').text(players['player3'][0]);
-  //         }
-  //       }
-  //
-  //     }else{
-  //
-  //       if($('#1').text() == $('#7').text() && $('#1').text() == $('#9').text()){
-  //         if($('#4').is(':empty') === true){
-  //           $('#4').text(players['player3'][0]);
-  //         }else{
-  //           $('#8').text(players['player3'][0]);
-  //         }
-  //       }else if($('#3').text() == $('#7').text() && $('#3').text() == $('#9').text()){
-  //         if($('#6').is(':empty') === true){
-  //           $('#6').text(players['player3'][0]);
-  //         }else if($('#8').is(':empty') === true){
-  //           $('#8').text(players['player3'][0]);
-  //         }else if($('#5').is(':empty') === true){
-  //           $('#5').text(players['player3'][0]);
-  //         }
-  //       }
-  //     }
-  //     break;
-  //
-  //   case 2:
-  //     break;
-  //
-  //   case 1:
-  //     $($('td:empty')[0]).text(players['player3'][0]); //fill out the remaining empty box
-  //     break;
-  // }
-  //
-  // checkWin(playerTurn);
-  //
-  // if(gameStarted === false){
-  //   $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
-  //   gameOver();
-  //   countWin(playerTurn);
-  // }
-  // else{
-  // playerTurn = 0;
-  // $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
-  // }
 }
 
 //this function updates the gameboard object everytime the board is clicked and filled with a O/X
@@ -534,10 +401,6 @@ const gameOver = function(win){
 
   $('table td').off('click');
   $('.play-again').removeClass('hidden');
-  if(win === true){
-    $('.win-gif').removeClass('hidden');
-    $('.win-cat').removeClass('hidden');
-  }
 
   playerMoves = [];
 }
@@ -545,9 +408,9 @@ const gameOver = function(win){
 const playAgain = function(){
   $('table td').empty(); //clears out all data on the board
   $('table td').removeClass('green'); // removes any green class boxes
-  $('.win-gif').addClass('hidden');
-  $('.win-cat').addClass('hidden');
+  $('.play-again').addClass('hidden');
   startGame();
+
 }
 
 $('.play-again').on('click', playAgain);
