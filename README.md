@@ -6,7 +6,7 @@ Feeling bored in class/ work/ home, play the classic Tic Tac Toe game instead
 
 Win a game by get a row of 3 tiles either vertically, horizontally or diagonally (for both the 3x3 and 4x4 boards).
 
-For the 5x5 boards it gets trickier where you need 4 in a row and lastly for the ultimate challenge, get 5 in a row on the 7x7 board.
+For the 5x5 boards it gets trickier where you need 5 in a row and lastly for the ultimate challenge, get 7 in a row on the 7x7 board.
 
 
 ## Motivation
@@ -28,7 +28,7 @@ This project uses **HTML, CSS and Javascript**. **JQuery** is also used to commu
   * get 5 in a row to win in a 5x5 board
   * get 7 in a row to win in a 7x7 board
 * Keeps track of win count  
-* Cat dance for wins
+* Ability to save game state when playing with 2 users (is not available when playing with the computer)
 
 In this game of Tic Tac Toe, you can ***choose your characters***, (there's no need for the old boring 'O' and 'X'), maybe you want to be a bear 🐻 or be a poop emoji 💩,(use `cmd` + `ctrl` + `space`) it's all possible! You can also play on ***different board sizes*** for a bigger challenge amongst your friends.
 
@@ -99,3 +99,7 @@ tr:last-child td{
 * Creating an Computer player that never loses in the classic 3x3 game  
 * Ability to select images/ gifs as player tokens
 * Support network players so that this game can be played by someone else not in the same room
+
+## Special Thanks ❤️
+
+Special thanks to @Mai Nguyen for helping me test the code and identify bugs. Also for @Bhavya who helped with some amazing CSS tricks to make the tables get styled as they are appended

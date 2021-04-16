@@ -78,6 +78,7 @@ $('#comp-player').on('change', function(){
   $('.cp').toggle('hidden'); //enable users to select computer going first if 'play with computer' selected
   $('.p2').toggle('hidden')
   $('.1-win').toggle('hidden');
+  $('.save-game').toggle('hidden')
   if($('#comp-player').is(':checked')){ //when the computer player checkbox is checked then set computerplaying to true else it is false
     computerPlaying = true;
   } else{
@@ -139,6 +140,7 @@ const startGame = function(){
   }
 
   $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
+
   gameStarted = true;
 
   //obtains board choice to get board size
@@ -174,7 +176,6 @@ const startGame = function(){
 
   //If computer starts first this will get the computer to make a move
   if(playerTurn == 2){
-    console.log("here")
     computerTurn();
   }
 
@@ -199,7 +200,7 @@ const fillBox = function(box){
 // it is a tie when the gameStarted is still true, and there are no empty <td> (all is filled)
   if(gameStarted === true && $('td:empty').length === 0){
     $('.player-turn').text(`Game over, it's a tie`);
-    gameOver(win);
+    gameOver();
 
 //this condition checks in general if gameStart is still true, the game is still running
   }else if(gameStarted === true ){
@@ -212,7 +213,6 @@ const fillBox = function(box){
         playerTurn = 0;
       }
     }else { //when computer is playing
-      console.log("in here: " + playerTurn)
       if(playerTurn == 0){
         playerTurn = 2;
       } else{
@@ -221,7 +221,6 @@ const fillBox = function(box){
     }
 
     $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
-
     //if it is time for the computer to play call the computerTurn() function
     if(playerTurn === 2){
       computerTurn();
@@ -232,12 +231,12 @@ const fillBox = function(box){
 
 
   // if there is a win, the checkWin function would have turned gameStarted into false
-  } else if(gameStarted === false) { //checks whether any win conditions were satisfied
-    $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
-    $('win-gif').removeClass('hidden');
-    gameOver(win);
-    countWin(playerTurn);
   }
+  // else if(gameStarted === false) { //checks whether any win conditions were satisfied
+  //   $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
+  //   gameOver();
+  //   countWin(playerTurn);
+  // }
 
 }
 
@@ -251,8 +250,11 @@ const computerTurn = function(){
   let randomNum = Math.floor(Math.random()* emptyBoxesAmt);
   let boxToBeFilled = $('td:empty')[randomNum];
   $(boxToBeFilled).text(players['player' + (+ playerTurn + 1)][0]);
+  $(boxToBeFilled).off('click');
+  checkWin(playerTurn);
   playerTurn = 0;
   $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
+
 }
 
 //this function updates the gameboard object everytime the board is clicked and filled with a O/X
@@ -419,12 +421,23 @@ const checkWin = function(playerTurn) {
     if(win === true){
       gameStarted = false;
     }
+
+
+    if(gameStarted === false) { //checks whether any win conditions were satisfied
+      gameOver();
+      countWin(playerTurn);
+      // players['player3'][1] += 1;
+      // $('.2-win').text(`Player ${players['player3'][0]} wins: ${players['player3'][1]}`);
+      $('.player-turn').text(`Game over, player ${players['player' + (+ playerTurn + 1)][0]} won!`);
+
+    }
+
     return win;
 }
 
 //this function is used when the game is over due to a player win or a tie, so that the board is no longer clickable
 //and the "play again" button re-appears
-const gameOver = function(win){
+const gameOver = function(){
 
   $('table td').off('click');
   $('.play-again').removeClass('hidden');
