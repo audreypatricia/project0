@@ -2,7 +2,7 @@
 $('.player-turn').addClass('hidden'); // initially set the turn text hidden
 $('.play-again').addClass('hidden'); //intially sets play again button hidden
 // let players = []; // TODO: change to an object to hold token and wins
-
+$('.cp').addClass('hidden');
 //object player stores all player details i.e. token and win-count
 //the first array value is for the player token, the second counts wins
 let players = {
@@ -23,11 +23,14 @@ const saveGame = function(){
   localStorage.setItem("player1Token", players.player1[0]);
   localStorage.setItem("player2Token", players.player2[0]);
   localStorage.setItem("isSaved", isSaved);
+
+  localStorage.setItem("computerPlaying", $('#comp-player').is(':checked'));
 }
 
 $('.save-game').on('click', saveGame);
 $('.clear-game').on('click', function(){
   localStorage.clear();
+  location.reload();
 })
 
 if(localStorage.getItem('isSaved') === "true"){
@@ -44,6 +47,13 @@ if(localStorage.getItem('isSaved') === "true"){
 
   $('.start-game').addClass('hidden');
   $('.play-again').removeClass('hidden');
+  if(localStorage.getItem('computerPlaying') === "true"){
+    $("#comp-player").prop('checked', true);
+    $('.player2_token').toggle('hidden'); // if computer player checkbox is ticked player 2 toke choice is hidden
+    $('.cp').toggle('hidden'); //enable users to select computer going first if 'play with computer' selected
+    $('.p2').toggle('hidden')
+    $('.1-win').toggle('hidden');
+  }
 }
 
 let playerTurn =  0; // this keeps track of which player's turn it is, this is used to call specific player objects
@@ -64,7 +74,9 @@ let computerPlaying = false; //checks whether the player chooses to play with th
 
 //this bit of code hides the inputs for player 2 if the user decides to play against the computer
 $('#comp-player').on('change', function(){
-  $('.p2').toggle('hidden'); // if computer player checkbox is ticked player 2 toke choice is hidden
+  $('.player2_token').toggle('hidden'); // if computer player checkbox is ticked player 2 toke choice is hidden
+  $('.cp').toggle('hidden'); //enable users to select computer going first if 'play with computer' selected
+  $('.p2').toggle('hidden')
   $('.1-win').toggle('hidden');
   if($('#comp-player').is(':checked')){ //when the computer player checkbox is checked then set computerplaying to true else it is false
     computerPlaying = true;
@@ -88,11 +100,25 @@ const startGame = function(){
       $('.2-win').addClass('hidden');
     }
 
-
-  $('.start-game').addClass('hidden');
-  $('.player-turn').removeClass('hidden');
-
+  if( $('#player1').val() ==  $('#player2').val()){ //if the token spaces are filled
+    alert("Both players have the same token, please ensure each player has unique tokens to play")
+    return;
+  }else if($('#player1').val() !== "" && $('#player2').val() !== "" || computerPlaying == true){
     customiseToken(); //gets the customised token the player chooses
+  }else if($('#player1').val() == "" && $('#player2').val() == "" ){
+    alert("Please choose a token for both players before starting the game");
+    return;
+  } else if($('#player1').val() == ""){
+    alert("Please choose a token for player 1 before starting the game");
+    return;
+  }else if($('#player2').val() == "" && computerPlaying == false){
+    alert("Please choose a token for player 2 before starting the game ");
+    return;
+  }
+
+
+    $('.start-game').addClass('hidden');
+    $('.player-turn').removeClass('hidden');
 
   // this checks which player will go first
   if($('#option-player1').is(':checked') === true){
@@ -226,6 +252,7 @@ const computerTurn = function(){
   let boxToBeFilled = $('td:empty')[randomNum];
   $(boxToBeFilled).text(players['player' + (+ playerTurn + 1)][0]);
   playerTurn = 0;
+  $('.player-turn').text(`It's player's ${players['player' + (+ playerTurn + 1)][0]} turn`);
 }
 
 //this function updates the gameboard object everytime the board is clicked and filled with a O/X
@@ -435,26 +462,32 @@ const countWin = function(playerTurn){
 // allow players to customise their token
 //put player tokens into the players array
 const customiseToken = function(){
+
   let player1 = $('#player1').val(); // get token value from input
   let player2 = $('#player2').val();
-  players.player1[0] = player1; // add token to player object
-  players.player2[0] = player2;
 
-  let counter1 = $('.0-win'); //change score count text
-  let counter2 = $('.1-win');
-  let counter3 = $('.2-win');
-  counter1.text(`Player ${players.player1[0]} wins: ${players.player1[1]}`);
-  counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
-  counter3.text(`Player ${players.player3[0]} wins: ${players.player3[1]}`);
+    players.player1[0] = player1; // add token to player object
+    players.player2[0] = player2;
 
-//if the computer is not playing then the player 2 values/ tokens will be initialised
-  // if(computerPlaying === false){
-  //   let player2 = $('#player2').val();
-  //   players.player2[0] = player2;
-  //   counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
-  // } else{ //if computer is playing
-  //   counter2.text(`Player ${players.player3[0]} wins: ${players.player3[1]}`);
-  // }
+    let counter1 = $('.0-win'); //change score count text
+    let counter2 = $('.1-win');
+    let counter3 = $('.2-win');
+    counter1.text(`Player ${players.player1[0]} wins: ${players.player1[1]}`);
+    counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
+    counter3.text(`Player ${players.player3[0]} wins: ${players.player3[1]}`);
+
+    $('.play_options').addClass('hidden');
+
+  //if the computer is not playing then the player 2 values/ tokens will be initialised
+    // if(computerPlaying === false){
+    //   let player2 = $('#player2').val();
+    //   players.player2[0] = player2;
+    //   counter2.text(`Player ${players.player2[0]} wins: ${players.player2[1]}`);
+    // } else{ //if computer is playing
+    //   counter2.text(`Player ${players.player3[0]} wins: ${players.player3[1]}`);
+    // }
+
+
 
 }
 

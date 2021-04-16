@@ -31,30 +31,38 @@
         </table>
         <br>
 
-        <label for="player1">Player 1 token:</label>
-        <input id="player1" type="text" placeholder="choose your token!"> <br>
-        <br>
-        <label for="player2" class="p2">Player 2 token:</label>
-        <input id="player2" class="p2" type="text" placeholder="choose your token!"> <br><br>
-        <input type="checkbox" id="comp-player" name="computer" value="1">
-        <label for="comp-player">Play with computer</label><br>
+        <div class="play_options">
+          <label class="player1_token" for="player1">Player 1 token:
+            <input id="player1" type="text" placeholder="choose your token!">
+          </label>
+          <br>
+          <br>
+          <label class="player2_token" for="player2" class="p2">Player 2 token:
+            <input id="player2" class="p2" type="text" placeholder="choose your token!">
+          </label>
+           <br><br>
+          <input type="checkbox" id="comp-player" name="computer" value="1">
+          <label for="comp-player">Play with computer</label><br>
 
-        <p>Please select who goes first:</p>
-        <input type="radio" id="option-player1" value="0" name="players">Player 1</input> <!--value attr is returned -->
+          <p>Please select who goes first:</p>
+          <input type="radio" id="option-player1" value="0" name="players">Player 1</input> <!--value attr is returned -->
 
-        <input type="radio" id="option-player2" class="p2" value="1" name="players"></input>
-        <label for="option-player2" class="p2">Player 2 </label>
+          <input type="radio" id="option-player2" class="p2" value="1" name="players"></input>
+          <label for="option-player2" class="p2">Player 2 </label>
 
-        <input type="radio" id="computer-player" class="cp" value="2" name="players"></input>
-        <label for="computer-player" class="cp">Computer 💻 </label>
-        <br>
+          <input type="radio" id="computer-player" class="cp" value="2" name="players"></input>
+          <label for="computer-player" class="cp">Computer 💻 </label>
+          <br>
 
-        <p>Select board size:</p>
-        <input type="radio" id="3x3" value="3" name="board-size">3x3</input> <!--value attr is returned -->
-        <input type="radio" id="4x4" value="4" name="board-size">4x4</input>
-        <input type="radio" id="5x5" value="5" name="board-size">5x5</input>
-        <input type="radio" id="7x7" value="7" name="board-size">7x7</input>
-        <br>
+          <p>Select board size:</p>
+          <input type="radio" id="3x3" value="3" name="board-size" checked>3x3 (default)</input> <!--value attr is returned -->
+          <input type="radio" id="4x4" value="4" name="board-size">4x4</input>
+          <input type="radio" id="5x5" value="5" name="board-size">5x5</input>
+          <input type="radio" id="7x7" value="7" name="board-size">7x7</input>
+          <br>
+        </div>
+
+
 
 
       </main>
